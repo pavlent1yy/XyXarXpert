@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.sql.SQLOutput;
-
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -39,7 +37,7 @@ public class SecurityConfig {
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login?logout")
                 );
-        
+
         return http.build();
     }
 
