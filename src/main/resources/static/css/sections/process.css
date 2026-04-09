@@ -1,0 +1,14 @@
+/* ===== PROCESS ===== */
+.process {
+    padding: var(--spacing-xxl) 20px;
+    background: var(--bg-secondary);
+}
+
+.process-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
+}

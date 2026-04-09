@@ -1,0 +1,43 @@
+/* ===== ABOUT ===== */
+.about {
+    padding: var(--spacing-xxl) 20px;
+    background: var(--bg-dark);
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.stats-mini {
+    display: flex;
+    gap: 30px;
+}
+
+.stat {
+    flex: 1;
+}
+
+.stat .number {
+    display: block;
+    font-size: var(--font-5xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-orange);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+}
+
+.stat .label {
+    font-size: var(--font-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+}
+
+.about-features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}

@@ -1,0 +1,191 @@
+/* ===== NAVBAR ===== */
+.navbar {
+    padding: 20px 0;
+    border-bottom: var(--border-width) solid var(--color-orange);
+    backdrop-filter: blur(10px);
+    background: rgba(15, 15, 15, 1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background var(--transition-normal),
+    backdrop-filter var(--transition-normal);
+}
+
+.navbar.scrolled {
+    background: rgba(15, 15, 15, 0.7);
+    backdrop-filter: blur(20px);
+}
+
+/* ===== LOGO ===== */
+.logo-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    display: inline-block;
+    background: white;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.logo .x1,
+.logo .x2 {
+    color: var(--color-orange);
+    display: inline-block;
+    transition: all var(--transition-fast);
+}
+
+.logo .x3 {
+    color: var(--color-blue);
+    display: inline-block;
+    transition: all var(--transition-fast);
+}
+
+.logo-full {
+    position: absolute;
+    top: 8px;
+    left: 52px;
+    display: flex;
+    gap: 0;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-medium);
+    pointer-events: none;
+}
+
+.logo-full .letter {
+    display: inline-block;
+    animation: letterReveal var(--transition-slow) forwards;
+    opacity: 0;
+}
+
+.logo-full .letter:nth-child(1) { animation-delay: 0.05s; }
+.logo-full .letter:nth-child(2) { animation-delay: 0.1s; }
+.logo-full .letter:nth-child(3) { animation-delay: 0.15s; }
+.logo-full .letter:nth-child(4) { animation-delay: 0.2s; }
+.logo-full .letter:nth-child(5) { animation-delay: 0.25s; }
+.logo-full .letter:nth-child(6) { animation-delay: 0.3s; }
+.logo-full .letter:nth-child(7) { animation-delay: 0.35s; }
+.logo-full .letter:nth-child(8) { animation-delay: 0.4s; }
+.logo-full .letter:nth-child(9) { animation-delay: 0.45s; }
+
+.logo:hover .x1 {
+    transform: rotateY(360deg) scale(1.1);
+}
+
+.logo:hover .x2 {
+    transform: rotateX(360deg) scale(1.1);
+}
+
+.logo:hover .x3 {
+    transform: rotateZ(360deg) scale(1.1);
+}
+
+.logo:hover .logo-full {
+    opacity: 1;
+}
+
+/* ===== NAV MENU ===== */
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 50px;
+    transition: all var(--transition-normal);
+}
+
+.nav-menu.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(20px);
+}
+
+.nav-menu a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    transition: color var(--transition-fast);
+}
+
+.nav-menu a::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-orange);
+    transition: width var(--transition-normal);
+}
+
+.nav-menu a:hover {
+    color: var(--color-orange);
+}
+
+.nav-menu a:hover::before {
+    width: 100%;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    transition: all var(--transition-normal);
+    position: relative;
+}
+
+.hamburger span {
+    width: 24px;
+    height: 2.5px;
+    background: var(--color-orange);
+    border-radius: 2px;
+    transition: all var(--transition-normal);
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translateY(15px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-15px);
+}
+
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-radius: var(--radius-full);
+    background: rgba(247, 154, 36, 0.2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hamburger.clicked::after {
+    animation: burgerPulse var(--transition-slow);
+}

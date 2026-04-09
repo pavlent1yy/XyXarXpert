@@ -1,0 +1,63 @@
+/* ===== TYPOGRAPHY ===== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 2px;
+}
+
+h1 {
+    font-size: var(--font-8xl);
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: var(--font-7xl);
+}
+
+h3 {
+    font-size: var(--font-4xl);
+}
+
+h4 {
+    font-size: var(--font-2xl);
+}
+
+p {
+    font-size: var(--font-lg);
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.section-header {
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+}
+
+.section-header h2 {
+    margin-bottom: 20px;
+}
+
+.header-line {
+    width: 60px;
+    height: 4px;
+    background: var(--color-orange);
+    border-radius: var(--radius-sm);
+    animation: lineExpand var(--transition-slow) forwards;
+}

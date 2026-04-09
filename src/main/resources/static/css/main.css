@@ -1,0 +1,27 @@
+/* ===== MAIN CSS ENTRY POINT ===== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+/* Base Styles */
+@import 'base/reset.css';
+@import 'base/variables.css';
+@import 'base/typography.css';
+
+/* Components */
+@import 'components/navbar.css';
+@import 'components/menu.css';
+@import 'components/buttons.css';
+@import 'components/cards.css';
+@import 'components/forms.css';
+
+/* Sections */
+@import 'sections/hero.css';
+@import 'sections/services.css';
+@import 'sections/about.css';
+@import 'sections/process.css';
+@import 'sections/contacts.css';
+@import 'sections/footer.css';
+
+/* Utilities */
+@import 'utilities/animations.css';
+@import 'utilities/responsive.css';
+@import 'utilities/effects.css';

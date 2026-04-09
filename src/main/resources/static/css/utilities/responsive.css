@@ -1,0 +1,160 @@
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .services-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .services-side {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .contacts-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form {
+        position: static;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .container-nav {
+        padding: 0 15px;
+    }
+
+    h1 {
+        font-size: var(--font-5xl);
+    }
+
+    h2 {
+        font-size: var(--font-5xl);
+    }
+
+    h3 {
+        font-size: var(--font-3xl);
+    }
+
+    .hero p {
+        font-size: var(--font-lg);
+    }
+
+    .services-side {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-steps {
+        gap: 15px;
+    }
+
+    .step-arrow {
+        display: none;
+    }
+
+    .step {
+        max-width: 150px;
+        padding: 25px 15px;
+    }
+
+    .footer .container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .footer-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: var(--font-5xl);
+    }
+
+    h2 {
+        font-size: var(--font-4xl);
+    }
+
+    h3 {
+        font-size: var(--font-2xl);
+    }
+
+    .logo {
+        font-size: 20px;
+        padding: 6px 12px;
+    }
+
+    .hero-content {
+        padding: 40px 0;
+    }
+
+    .hero p {
+        font-size: var(--font-base);
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: var(--font-xs);
+    }
+
+    .service-large {
+        padding: 25px;
+    }
+
+    .service-number {
+        font-size: var(--font-5xl);
+    }
+
+    .about-card {
+        padding: 30px;
+    }
+
+    .stats-mini {
+        flex-direction: column;
+    }
+
+    .services-side {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .service-card {
+        padding: 20px 15px;
+    }
+
+    .card-icon {
+        font-size: 32px;
+    }
+
+    .process-steps {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .step {
+        max-width: 100%;
+        padding: 25px;
+    }
+
+    .contacts-wrapper {
+        gap: 30px;
+    }
+
+    .contact-form {
+        padding: 25px;
+    }
+}

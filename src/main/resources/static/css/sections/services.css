@@ -1,0 +1,23 @@
+/* ===== SERVICES ===== */
+.services {
+    padding: var(--spacing-xxl) 20px;
+    background: var(--bg-secondary);
+}
+
+.services-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.services-main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.services-side {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}

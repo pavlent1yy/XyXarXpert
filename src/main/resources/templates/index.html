@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XXX - Сервисный центр мобильных телефонов</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+<!-- Мобильное меню -->
+<div class="mobile-menu">
+    <div class="menu-header">
+        <h3>Menu</h3>
+        <button class="menu-close">&times;</button>
+    </div>
+    <nav class="menu-nav">
+        <a href="#services" class="menu-link">Услуги</a>
+        <a href="#about" class="menu-link">О нас</a>
+        <a href="#contacts" class="menu-link">Контакты</a>
+        <div class="menu-divider"></div>
+        <div class="menu-section-title">Виды услуг</div>
+        <a href="#services" class="menu-service">Замена экрана</a>
+        <a href="#services" class="menu-service">Батарея</a>
+        <a href="#services" class="menu-service">Динамик</a>
+        <a href="#services" class="menu-service">Камера</a>
+        <a href="#services" class="menu-service">Зарядка</a>
+        <a href="#services" class="menu-service">Железо</a>
+        <a href="#services" class="menu-service">ПО & ласт</a>
+        <a href="#services" class="menu-service">Данные</a>
+    </nav>
+</div>
+
+<!-- Оверлей для меню -->
+<div class="menu-overlay"></div>
+
+<!-- Навигация -->
+<nav class="navbar">
+    <div class="container-nav">
+        <button class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="logo-wrapper">
+            <div class="logo">
+                <span class="x1">X</span><span class="x2">X</span><span class="x3">X</span>
+                <div class="logo-full">
+                    <span class="letter" style="color: #f79a24;">y</span>
+                    <span class="letter" style="color: #f79a24;">X</span>
+                    <span class="letter" style="color: #f79a24;">a</span>
+                    <span class="letter" style="color: #f79a24;">r</span>
+                    <span class="letter" style="color: #f79a24;">X</span>
+                    <span class="letter" style="color: #0d27c4;">p</span>
+                    <span class="letter" style="color: #0d27c4;">e</span>
+                    <span class="letter" style="color: #0d27c4;">r</span>
+                    <span class="letter" style="color: #0d27c4;">t</span>
+                </div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#services">Услуги</a></li>
+            <li><a href="#about">О нас</a></li>
+            <li><a href="#contacts">Контакты</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Героический раздел -->
+<section id="hero" class="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <div class="hero-label">// Мобильный сервис</div>
+            <h1>Когда телефон в<br><span class="accent">беде</span></h1>
+            <p>Быстрое и качественное обслуживание без лишних слов</p>
+            <button class="btn btn-primary">Заказать ремонт</button>
+        </div>
+        <div class="hero-visual">
+            <div class="phone-mockup">
+                <div class="phone-screen"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Услуги -->
+<section id="services" class="services">
+    <div class="container">
+        <div class="section-header">
+            <h2>Что мы исправляем</h2>
+            <div class="header-line"></div>
+        </div>
+
+        <div class="services-layout">
+            <div class="services-main">
+                <div class="service-large">
+                    <div class="service-number">01</div>
+                    <h3>Замена экрана</h3>
+                    <p>Восстанавливаем разбитые и повреждённые дисплеи. Оригинальные запчасти с гарантией качества.</p>
+                    <div class="service-meta">
+                        <span class="time">2-4 часа</span>
+                        <span class="price">от 50$</span>
+                    </div>
+                </div>
+                <div class="service-large">
+                    <div class="service-number">02</div>
+                    <h3>Батарея</h3>
+                    <p>Замена батареи на новую или восстановление ёмкости. Ваш телефон снова будет держать заряд.</p>
+                    <div class="service-meta">
+                        <span class="time">30 минут</span>
+                        <span class="price">от 30$</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="services-side">
+                <div class="service-card">
+                    <div class="card-icon">🔊</div>
+                    <h4>Динамик</h4>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">📷</div>
+                    <h4>Камера</h4>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">⚡</div>
+                    <h4>Зарядка</h4>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🔧</div>
+                    <h4>Железо</h4>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🛡️</div>
+                    <h4>ПО & ласт</h4>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">💾</div>
+                    <h4>Данные</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- О нас -->
+<section id="about" class="about">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-left">
+                <div class="about-card">
+                    <h2>XyXarXpert</h2>
+                    <p>Это не просто сервис. Это место, где мастера с опытом спасают твой телефон как врачи спасают пациента.</p>
+                    <div class="stats-mini">
+                        <div class="stat">
+                            <span class="number">5K+</span>
+                            <span class="label">Спасённых телефонов</span>
+                        </div>
+                        <div class="stat">
+                            <span class="number">10+</span>
+                            <span class="label">Лет опыта</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-right">
+                <div class="about-features">
+                    <div class="feature-item">
+                        <div class="feature-num">1</div>
+                        <h3>Профессионалы</h3>
+                        <p>Мастера с реальным опытом ремонта</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-num">2</div>
+                        <h3>Оригинал</h3>
+                        <p>Только качественные запчасти</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-num">3</div>
+                        <h3>Быстро</h3>
+                        <p>Большинство работ за 1-2 часа</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-num">4</div>
+                        <h3>Гарантия</h3>
+                        <p>На все виды выполняемых работ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Процесс -->
+<section class="process">
+    <div class="container">
+        <div class="section-header">
+            <h2>Как это работает</h2>
+            <div class="header-line"></div>
+        </div>
+
+        <div class="process-steps">
+            <div class="step">
+                <div class="step-circle">1</div>
+                <h3>Диагностика</h3>
+                <p>Определяем проблему бесплатно</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-circle">2</div>
+                <h3>Согласование</h3>
+                <p>Обсуждаем цену и время</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <h3>Ремонт</h3>
+                <p>Исправляем за 1-24 часа</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <h3>Готово</h3>
+                <p>Получаешь рабочий телефон</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Контакты -->
+<section id="contacts" class="contacts">
+    <div class="container">
+        <div class="contacts-wrapper">
+            <div class="contacts-info">
+                <h2>Где нас найти</h2>
+                <div class="contact-items">
+                    <div class="contact-item">
+                        <div class="contact-label">📍 Адрес</div>
+                        <p>ул. Центральная, д. 42<br>Город, 100000</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">📞 Телефон</div>
+                        <p>+7 (999) 123-45-67<br>+7 (999) 765-43-21</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">💬 Email</div>
+                        <p>info@xyxarxpert.ru<br>support@xyxarxpert.ru</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">🕐 Время</div>
+                        <p>Пн-Пт: 09:00-20:00<br>Сб-Вс: 10:00-18:00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h3>Быстрая заявка</h3>
+                <form>
+                    <input type="text" placeholder="Имя" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="tel" placeholder="Телефон" required>
+                    <textarea placeholder="Описание проблемы" rows="4" required></textarea>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Подвал -->
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 XXX - <span>XyXarXpert</span>. Все права защищены.</p>
+        <div class="footer-links">
+            <a href="#">VK</a>
+            <a href="#">Telegram</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

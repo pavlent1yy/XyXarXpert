@@ -1,0 +1,11 @@
+/* ===== EFFECTS ===== */
+/* Ripple эффект для всех кликабельных элементов */
+.btn,
+.service-large,
+.service-card,
+.about-card,
+.feature-item,
+.step,
+.contact-item {
+    position: relative;
+}

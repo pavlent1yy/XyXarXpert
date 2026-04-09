@@ -1,0 +1,57 @@
+/* ===== FORMS ===== */
+.contact-form {
+    background: var(--bg-secondary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: var(--border-width) solid var(--border-color);
+    transition: all var(--transition-normal);
+    position: sticky;
+    top: 100px;
+}
+
+.contact-form:hover {
+    border-color: var(--color-orange);
+    box-shadow: 0 20px 50px rgba(247, 154, 36, 0.15);
+}
+
+.contact-form h3 {
+    font-size: var(--font-3xl);
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+}
+
+.contact-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 12px 16px;
+    background: var(--bg-dark);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-sm);
+    font-family: 'JetBrains Mono', monospace;
+    transition: all var(--transition-fast);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    background: rgba(247, 154, 36, 0.05);
+    box-shadow: 0 0 15px rgba(247, 154, 36, 0.2);
+}
+
+.contact-form button {
+    margin-top: 10px;
+}

@@ -1,0 +1,24 @@
+/* ===== CONTACTS ===== */
+.contacts {
+    padding: var(--spacing-xxl) 20px;
+    background: var(--bg-dark);
+}
+
+.contacts-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.contacts-info h2 {
+    font-size: var(--font-6xl);
+    margin-bottom: var(--spacing-xl);
+    letter-spacing: 2px;
+}
+
+.contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}

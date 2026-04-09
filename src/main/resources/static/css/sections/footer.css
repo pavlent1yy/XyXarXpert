@@ -1,0 +1,58 @@
+/* ===== FOOTER ===== */
+.footer {
+    padding: var(--spacing-lg) 20px;
+    border-top: var(--border-width) solid var(--color-orange);
+    background: var(--bg-secondary);
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer p {
+    color: var(--text-secondary);
+    font-size: var(--font-sm);
+    letter-spacing: 0.5px;
+}
+
+.footer span {
+    color: var(--color-orange);
+    font-weight: var(--font-weight-bold);
+}
+
+.footer-links {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: var(--font-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-orange);
+    transition: width var(--transition-normal);
+}
+
+.footer-links a:hover {
+    color: var(--color-orange);
+}
+
+.footer-links a:hover::after {
+    width: 100%;
+}

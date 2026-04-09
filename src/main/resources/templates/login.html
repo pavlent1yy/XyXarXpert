@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/login.css}" href="login.css">
+</head>
+<body>
+<!-- Фон с анимацией -->
+<div class="login-bg">
+    <div class="bg-element bg-1"></div>
+    <div class="bg-element bg-2"></div>
+    <div class="bg-element bg-3"></div>
+</div>
+
+<!-- Контейнер входа -->
+<div class="login-container">
+    <!-- Левая часть - Логотип и текст -->
+    <div class="login-branding">
+        <div class="branding-content">
+            <a href="/" class="logo-small">XXX</a>
+
+            <div class="vertical-text">
+                <span class="login-word">L</span>
+                <span class="login-word">O</span>
+                <span class="login-word">G</span>
+                <span class="login-word">I</span>
+                <span class="login-word">N</span>
+            </div>
+
+        </div>
+
+        <!-- Декоративные линии -->
+        <div class="branding-decoration">
+            <div class="deco-line deco-line-1"></div>
+            <div class="deco-line deco-line-2"></div>
+        </div>
+    </div>
+
+    <!-- Правая часть - Форма входа -->
+    <div class="login-form-wrapper">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Вход в систему</h2>
+                <p>Введи свои учётные данные</p>
+            </div>
+
+            <form class="login-form" th:action="@{/auth/login}" method="post">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Электронная почта</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-input"
+                                placeholder="example@mail.com"
+                                required
+                        >
+                        <span class="input-icon">✉️</span>
+                    </div>
+                </div>
+
+                <!-- Пароль -->
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-input"
+                                placeholder="••••••••"
+                                required
+                        >
+                        <button type="button" class="toggle-password" data-target="password">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Помнить меня + Забыл пароль -->
+                <div class="form-actions">
+                    <label class="checkbox-custom">
+                        <input type="checkbox" name="remember-me">
+                        <span>Запомнить меня</span>
+                    </label>
+                    <a href="#" class="forgot-password">Забыли пароль?</a>
+                </div>
+
+                <!-- Кнопка входа -->
+                <button type="submit" class="btn-login">
+                    <span>Войти</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+
+                <!-- Разделитель -->
+                <div class="divider">
+                    <span>или</span>
+                </div>
+
+                <!-- Социальный вход -->
+                <div class="social-login">
+                    <button type="button" class="social-btn google">
+                        <span>G</span>
+                    </button>
+                    <button type="button" class="social-btn github">
+                        <span>⚙️</span>
+                    </button>
+                    <button type="button" class="social-btn vk">
+                        <span>VK</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Регистрация -->
+            <div class="form-footer">
+                <p>Нет аккаунта? <a th:href="@{/register}" href="#" class="signup-link">Зарегистрируйся</a></p>
+            </div>
+        </div>
+
+        <!-- Декоративные элементы -->
+        <div class="form-decoration">
+            <div class="deco-circle deco-1"></div>
+            <div class="deco-circle deco-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Линия снизу -->
+<div class="login-footer">
+    <a th:href="@{/}" href="/" class="back-link">← На главную</a>
+    <div class="footer-info">
+        <span>© 2026 XXX</span>
+        <span class="separator">•</span>
+        <span>XyXarXpert</span>
+    </div>
+</div>
+
+<script th:src="@{/js/login.js}" src="login.js"></script>
+</body>
+</html>

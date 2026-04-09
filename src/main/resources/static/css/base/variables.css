@@ -1,0 +1,63 @@
+/* ===== CSS VARIABLES ===== */
+:root {
+    /* Colors */
+    --color-orange: #f79a24;
+    --color-blue: #0d27c4;
+
+    /* Background */
+    --bg-dark: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #242424;
+
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #b0b5c0;
+
+    /* Borders */
+    --border-color: #2a2a2a;
+    --border-width: 2px;
+
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 40px;
+    --spacing-xl: 80px;
+    --spacing-xxl: 100px;
+
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 50%;
+
+    /* Transitions */
+    --transition-fast: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Box Shadow */
+    --shadow-sm: 0 4px 15px rgba(255, 255, 255, 0.1);
+    --shadow-md: 0 8px 30px rgba(247, 154, 36, 0.15);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --shadow-overlay: 5px 0 20px rgba(0, 0, 0, 0.5);
+
+    /* Font Sizes */
+    --font-xs: 11px;
+    --font-sm: 12px;
+    --font-base: 14px;
+    --font-lg: 16px;
+    --font-xl: 18px;
+    --font-2xl: 20px;
+    --font-3xl: 24px;
+    --font-4xl: 28px;
+    --font-5xl: 32px;
+    --font-6xl: 42px;
+    --font-7xl: 48px;
+    --font-8xl: 64px;
+
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 600;
+    --font-weight-bold: 700;
+}
