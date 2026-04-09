@@ -1,41 +1,42 @@
-HELP.md
+# Maven/Gradle
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
+!.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Spring Boot
+*.properties
+!src/main/resources/application*.properties  # оставляем конфиги приложения
+private-info.properties                      # скрываем приватные файлы явно
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# IDE
+# IntelliJ IDEA
+.idea/
 *.iml
-*.ipr
+*.iws
+out/
 
-### NetBeans ###
+# Eclipse / STS
+.classpath
+.project
+.settings/
+.apt_generated/
+
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
-
 
 # Логи и временные файлы
 *.log
 *.tmp
 *.bak
+*.swp
+.DS_Store
 
-/src/main/resources/private-info.properties
+# OS файлы
+Thumbs.db
