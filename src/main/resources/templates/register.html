@@ -26,7 +26,7 @@
                 <p>Присоединяйся к нам</p>
             </div>
 
-            <form class="register-form" th:action="@{/auth/register}" th:object="${user}" method="post">
+            <form class="register-form" th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
                 <!-- Имя и Отчество в одну строку -->
                 <div class="form-row">
                     <div class="form-group">
@@ -106,7 +106,7 @@
                                     name="password"
                                     class="form-input"
                                     placeholder="••••••••"
-                                    th:field="*{passwordHash}"
+                                    th:field="*{password}"
                                     required
                             >
                             <button type="button" class="toggle-password" data-target="password">
@@ -124,6 +124,7 @@
                                     name="password_confirm"
                                     class="form-input"
                                     placeholder="••••••••"
+                                    th:field="*{confirmPassword}"
                                     required
                             >
                             <button type="button" class="toggle-password" data-target="confirmPassword">

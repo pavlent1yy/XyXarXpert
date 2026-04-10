@@ -2,11 +2,13 @@ package com.xxxpert.xyxarxpert.controllers;
 
 
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
+import com.xxxpert.xyxarxpert.entities.RegisterRequest;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +23,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("registerRequest", new RegisterRequest());
         return "register";
     }
 
@@ -32,22 +34,24 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") User user, Model model){
-        System.out.println(user.toString());
-        try {
-            userService.registerUser(user);
-            model.addAttribute("success", true);
-            return "redirect:/auth/login?success=true";
-        } catch (UserAlreadyExistsException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Пользователь с таким email уже зарегистрирован");
-            return "register";
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Произошла ошибка при регистрации. Попробуйте позже.");
+    public String register(@ModelAttribute("registerRequest") RegisterRequest request,
+                           BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
             return "register";
         }
-    }
 
+        if (!request.getPassword().equals(request.getConfirmPassword())){
+            model.addAttribute("error", "Пароли не совпадают");
+        }
+
+        try {
+            userService.registerUser(request);
+            return "redirect:/auth/login?success=true";
+        } catch (UserAlreadyExistsException e) {
+            model.addAttribute("error", "Пользователь уже существует");
+            return "register";
+        }
+
+    }
 
 }
