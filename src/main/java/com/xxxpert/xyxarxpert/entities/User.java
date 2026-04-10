@@ -40,6 +40,9 @@ public class User {
     @Column(name = "registered_at")
     private OffsetDateTime registeredAt;
 
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
+
 
     @Override
     public String toString() {
@@ -51,7 +54,8 @@ public class User {
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", role='" + role + '\'' +
-                ", registeredAt=" + registeredAt +
+                ", registeredAt=" + registeredAt + '\'' +
+                ", enabled= " + enabled +
                 '}';
     }
 }

@@ -4,15 +4,13 @@ package com.xxxpert.xyxarxpert.controllers;
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
 import com.xxxpert.xyxarxpert.entities.RegisterRequest;
 import com.xxxpert.xyxarxpert.entities.User;
+import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @AllArgsConstructor
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -33,25 +32,48 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/verify")
+    public String verifyPage(){
+        return "verify";
+    }
+
+    @PostMapping("/verify")
+    public String verifyEmail(@RequestParam String email,
+                              @RequestParam String code, Model model){
+
+        boolean isVerify = emailService.verifyCode(email, code);
+
+        if (isVerify) {
+            model.addAttribute("message", "Почта верифицирована");
+            return "redirect:/login?emailverified=true";
+        } else {
+            model.addAttribute("error", "Код не верный или истек");
+            return "verify";
+        }
+    }
+
+
     @PostMapping("/register")
     public String register(@ModelAttribute("registerRequest") RegisterRequest request,
-                           BindingResult bindingResult, Model model){
-        if (bindingResult.hasErrors()){
+                           BindingResult bindingResult,
+                           Model model) {
+
+        if (bindingResult.hasErrors()) {
             return "register";
         }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())){
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
             model.addAttribute("error", "Пароли не совпадают");
+            return "register";
         }
 
         try {
             userService.registerUser(request);
-            return "redirect:/auth/login?success=true";
+            return "redirect:/verify";
         } catch (UserAlreadyExistsException e) {
             model.addAttribute("error", "Пользователь уже существует");
             return "register";
         }
-
     }
 
 }
