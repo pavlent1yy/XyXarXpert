@@ -23,7 +23,7 @@ public class UserService {
     private final EmailService emailService;
 
     @Value("${app.email-verification}")
-    private boolean emailVerificationEnabled;
+    public boolean emailVerificationEnabled;
 
     public String generateCode() {
         return String.valueOf((int)(Math.random() * 900000) + 100000);
@@ -46,8 +46,6 @@ public class UserService {
 
         user.setEnabled(false);
 
-        userRepository.save(user);
-
         if (emailVerificationEnabled) {
             String code = generateCode();
 
@@ -61,6 +59,7 @@ public class UserService {
         } else {
             user.setEnabled(true);
         }
+        userRepository.save(user);
     }
 
 

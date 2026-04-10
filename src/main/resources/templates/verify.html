@@ -1,23 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Verify Email</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение Email - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/verify.css}" href="verify.css">
 </head>
 <body>
+<!-- Фон с анимацией -->
+<div class="verify-bg">
+    <div class="bg-element bg-1"></div>
+    <div class="bg-element bg-2"></div>
+    <div class="bg-element bg-3"></div>
+</div>
 
-<h2>Email verification</h2>
+<!-- Контейнер верификации -->
+<div class="verify-container">
+    <!-- Левая часть - Информация -->
+    <div class="verify-info">
+        <div class="info-content">
+            <div class="logo-verify">
+                <span>XXX</span>
+            </div>
 
-<form method="post" action="/auth/verify">
-    <input type="email" name="email" placeholder="Email" required />
-    <br><br>
-    <input type="text" name="code" placeholder="Verification code" required />
-    <br><br>
-    <button type="submit">Verify</button>
-</form>
+            <div class="info-text">
+                <h2>Подтверди<br>свой email</h2>
+                <p>Мы отправили код подтверждения на твой адрес электронной почты</p>
+            </div>
 
-<p style="color:red;">
-    <span th:text="${error}"></span>
-</p>
+            <div class="info-steps">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <p>Введи свой email</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <p>Введи код из письма</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <p>Готово!</p>
+                </div>
+            </div>
 
+            <div class="info-security">
+                <div class="security-badge">
+                    <span class="badge-icon">🔒</span>
+                    <span class="badge-text">Твои данные защищены</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Правая часть - Форма -->
+    <div class="verify-form-wrapper">
+        <div class="form-container">
+            <div class="form-header">
+                <div class="form-icon">✉️</div>
+                <h2>Проверка Email</h2>
+                <p>Введи код, который мы отправили</p>
+            </div>
+
+            <form class="verify-form" th:action="@{/auth/verify}" method="post">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Электронная почта</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-input"
+                                placeholder="example@mail.com"
+                                th:value="${email}"
+                                required
+                        >
+                        <span class="input-icon">📧</span>
+                    </div>
+                    <div class="input-helper">Используй тот же email, что при регистрации</div>
+                </div>
+
+                <!-- Код верификации -->
+                <div class="form-group">
+                    <label for="code">Код подтверждения</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="text"
+                                id="code"
+                                name="code"
+                                class="form-input code-input"
+                                placeholder="000000"
+                                maxlength="6"
+                                required
+                        >
+                        <span class="input-icon">🔑</span>
+                    </div>
+                    <div class="input-helper">6-значный код из письма</div>
+                </div>
+
+                <!-- Ошибка -->
+                <div class="error-message" th:if="${error}">
+                    <span class="error-icon">⚠️</span>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- Кнопка подтверждения -->
+                <button type="submit" class="btn-verify">
+                    <span>Подтвердить</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+
+                <!-- Резервная ссылка -->
+                <div class="resend-section">
+                    <p>Не получил код?</p>
+                    <button type="button" class="resend-link">Отправить код повторно</button>
+                </div>
+            </form>
+
+            <!-- Навигация -->
+            <div class="form-footer">
+                <a th:href="@{/login}" href="/login" class="back-to-login">Вернуться ко входу</a>
+            </div>
+        </div>
+
+        <!-- Декоративные элементы -->
+        <div class="form-decoration">
+            <div class="deco-circle deco-1"></div>
+            <div class="deco-circle deco-2"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Нижняя панель -->
+<div class="verify-footer">
+    <div class="footer-content">
+        <span>© 2026 XXX</span>
+        <span class="separator">•</span>
+        <span>XyXarXpert</span>
+    </div>
+</div>
+
+<script th:src="@{/js/verify.js}" src="verify.js"></script>
 </body>
 </html>

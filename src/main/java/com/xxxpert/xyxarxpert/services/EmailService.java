@@ -35,7 +35,6 @@ public class EmailService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        System.out.println(user.toString());
         user.setEnabled(true);
         userRepository.save(user);
 

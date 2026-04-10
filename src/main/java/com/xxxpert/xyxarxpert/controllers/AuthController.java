@@ -20,11 +20,7 @@ public class AuthController {
     private final UserService userService;
     private final EmailService emailService;
 
-    @GetMapping("/register")
-    public String register(Model model) {
-        model.addAttribute("registerRequest", new RegisterRequest());
-        return "register";
-    }
+
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -33,7 +29,9 @@ public class AuthController {
     }
 
     @GetMapping("/verify")
-    public String verifyPage(){
+    public String verifyPage(@RequestParam(required = false) String email,
+                             Model model) {
+        model.addAttribute("email", email);
         return "verify";
     }
 
@@ -45,13 +43,18 @@ public class AuthController {
 
         if (isVerify) {
             model.addAttribute("message", "Почта верифицирована");
-            return "redirect:/login?emailverified=true";
+            return "redirect:/auth/login?emailverified=true";
         } else {
             model.addAttribute("error", "Код не верный или истек");
             return "verify";
         }
     }
 
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "register";
+    }
 
     @PostMapping("/register")
     public String register(@ModelAttribute("registerRequest") RegisterRequest request,
@@ -69,7 +72,10 @@ public class AuthController {
 
         try {
             userService.registerUser(request);
-            return "redirect:/verify";
+            if (userService.emailVerificationEnabled)
+                return "redirect:/auth/verify?email=" + request.getEmail();
+            else
+                return "redirect:/auth/login?success=true";
         } catch (UserAlreadyExistsException e) {
             model.addAttribute("error", "Пользователь уже существует");
             return "register";
