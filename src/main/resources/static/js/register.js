@@ -7,6 +7,30 @@ const togglePasswordBtns = document.querySelectorAll('.toggle-password');
 const termsCheckbox = document.querySelector('input[name="terms"]');
 const submitBtn = document.querySelector('.btn-register');
 
+// Автоскрытие сообщений об ошибках через 5 сек
+window.addEventListener('load', () => {
+    const errorMessage = document.querySelector('.error-message');
+
+    if (errorMessage) {
+        setTimeout(() => {
+            errorMessage.style.animation = 'slideUp 0.4s ease forwards';
+            setTimeout(() => errorMessage.remove(), 400);
+        }, 5000);
+    }
+
+    // Анимация появления элементов
+    const formContainer = document.querySelector('.form-container');
+    const brandingContent = document.querySelector('.branding-content');
+
+    if (formContainer) {
+        formContainer.style.animation = 'slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    if (brandingContent) {
+        brandingContent.style.animation = 'slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+});
+
 // Toggle пароля
 togglePasswordBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -63,28 +87,11 @@ if (form) {
         const originalHTML = submitBtn.innerHTML;
         submitBtn.innerHTML = '<span class="spinner"></span>';
 
-        // Имитация задержки перед отправкой
         setTimeout(() => {
             // Форма отправится через стандартный POST запрос
         }, 300);
     });
 }
-
-// Анимация появления элементов при загрузке
-window.addEventListener('load', () => {
-    const formContainer = document.querySelector('.form-container');
-    const brandingContent = document.querySelector('.branding-content');
-
-    // Анимация формы слева
-    if (formContainer) {
-        formContainer.style.animation = 'slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
-
-    // Анимация текста справа
-    if (brandingContent) {
-        brandingContent.style.animation = 'slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
-});
 
 // Добавляем стили для анимаций в JS
 const style = document.createElement('style');
@@ -108,6 +115,17 @@ style.textContent = `
         to {
             opacity: 1;
             transform: translateX(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
         }
     }
 

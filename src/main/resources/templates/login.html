@@ -48,6 +48,22 @@
                 <p>Введи свои учётные данные</p>
             </div>
 
+            <!-- Сообщения об ошибках и успехе -->
+            <div th:if="${param.emailverified}" class="success-message">
+                <span class="success-icon">✓</span>
+                <span>Email успешно верифицирован! Теперь войди в аккаунт</span>
+            </div>
+
+            <div th:if="${param.success}" class="success-message">
+                <span class="success-icon">✓</span>
+                <span>Регистрация успешна! Теперь войди в аккаунт</span>
+            </div>
+
+            <div th:if="${param.error}" class="error-message">
+                <span class="error-icon">⚠️</span>
+                <span>Неверный email или пароль</span>
+            </div>
+
             <form class="login-form" th:action="@{/auth/login}" method="post">
                 <!-- Email -->
                 <div class="form-group">
@@ -119,7 +135,7 @@
 
             <!-- Регистрация -->
             <div class="form-footer">
-                <p>Нет аккаунта? <a th:href="@{/auth/register}" href="#" class="signup-link">Зарегистрируйся</a></p>
+                <p>Нет аккаунта? <a th:href="@{/auth/register}" class="signup-link">Зарегистрируйся</a></p>
             </div>
         </div>
 
@@ -133,7 +149,7 @@
 
 <!-- Линия снизу -->
 <div class="login-footer">
-    <a th:href="@{/}" href="/" class="back-link">← На главную</a>
+    <a th:href="@{/}" class="back-link">← На главную</a>
     <div class="footer-info">
         <span>© 2026 XXX</span>
         <span class="separator">•</span>

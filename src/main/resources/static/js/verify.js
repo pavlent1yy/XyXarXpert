@@ -6,7 +6,39 @@ const codeInput = document.getElementById('code');
 const submitBtn = document.querySelector('.btn-verify');
 const resendBtn = document.querySelector('.resend-link');
 
-// Форма��ирование кода верификации
+// Автоскрытие сообщений об ошибках через 5 сек
+window.addEventListener('load', () => {
+    const successMessage = document.querySelector('.success-message');
+    const errorMessage = document.querySelector('.error-message');
+
+    if (successMessage) {
+        setTimeout(() => {
+            successMessage.style.animation = 'slideUp 0.4s ease forwards';
+            setTimeout(() => successMessage.remove(), 400);
+        }, 3000);
+    }
+
+    if (errorMessage) {
+        setTimeout(() => {
+            errorMessage.style.animation = 'slideUp 0.4s ease forwards';
+            setTimeout(() => errorMessage.remove(), 400);
+        }, 5000);
+    }
+
+    // Анимация появления элементов
+    const formContainer = document.querySelector('.form-container');
+    const infoContent = document.querySelector('.info-content');
+
+    if (formContainer) {
+        formContainer.style.animation = 'slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    if (infoContent) {
+        infoContent.style.animation = 'slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+});
+
+// Форматирование кода верификации
 if (codeInput) {
     codeInput.addEventListener('input', (e) => {
         // Оставляем только цифры
@@ -26,10 +58,9 @@ if (codeInput) {
 // Отправка формы
 if (form) {
     form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
         // Проверка длины кода
         if (codeInput.value.length !== 6) {
+            e.preventDefault();
             codeInput.style.borderColor = '#ff6b6b';
             codeInput.style.background = 'rgba(255, 107, 107, 0.05)';
             return;
@@ -43,7 +74,6 @@ if (form) {
         const originalHTML = submitBtn.innerHTML;
         submitBtn.innerHTML = '<span class="spinner"></span>';
 
-        // Имитация задержки перед отправко��
         setTimeout(() => {
             form.submit();
         }, 300);
@@ -59,9 +89,17 @@ if (resendBtn) {
 
         if (resendTimeout > 0) return;
 
+        const email = resendBtn.dataset.email || emailInput.value;
+
+        if (!email) {
+            alert('Пожалуйста, укажи email');
+            return;
+        }
+
         // Отключаем кнопку на 60 секунд
         resendBtn.disabled = true;
         let timeLeft = 60;
+        const originalText = resendBtn.textContent;
 
         const interval = setInterval(() => {
             resendBtn.textContent = `Отправить повторно (${timeLeft}с)`;
@@ -70,7 +108,7 @@ if (resendBtn) {
             if (timeLeft < 0) {
                 clearInterval(interval);
                 resendBtn.disabled = false;
-                resendBtn.textContent = 'Отправить код повторно';
+                resendBtn.textContent = originalText;
                 resendTimeout = 0;
             }
         }, 1000);
@@ -78,23 +116,17 @@ if (resendBtn) {
         resendTimeout = 60;
 
         // Здесь можно добавить реальный запрос на отправку кода
-        console.log('Код повторно отправлен на:', emailInput.value);
+        // fetch(`/auth/resend-code?email=${email}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             showSuccessMessage('Код повторно отправлен на ' + email);
+        //         }
+        //     });
+
+        console.log('Код повторно отправлен на:', email);
     });
 }
-
-// Анимация появления при загрузке
-window.addEventListener('load', () => {
-    const formContainer = document.querySelector('.form-container');
-    const infoContent = document.querySelector('.info-content');
-
-    if (formContainer) {
-        formContainer.style.animation = 'slideInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
-
-    if (infoContent) {
-        infoContent.style.animation = 'slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-    }
-});
 
 // Добавляем стили для анимаций
 const style = document.createElement('style');
@@ -118,6 +150,17 @@ style.textContent = `
         to {
             opacity: 1;
             transform: translateX(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
         }
     }
 
@@ -155,28 +198,17 @@ inputs.forEach(input => {
     });
 });
 
-// Очистка ошибки при вводе
+// Очистка ошибки при вводе кода
 if (codeInput) {
     codeInput.addEventListener('input', () => {
         const errorMessage = document.querySelector('.error-message');
-        if (errorMessage) {
+        if (errorMessage && codeInput.value.length > 0) {
             errorMessage.style.animation = 'slideUp 0.4s ease forwards';
+            setTimeout(() => {
+                if (errorMessage.parentElement) {
+                    errorMessage.remove();
+                }
+            }, 400);
         }
     });
 }
-
-// Стиль для удаления ошибки
-const style2 = document.createElement('style');
-style2.textContent = `
-    @keyframes slideUp {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-    }
-`;
-document.head.appendChild(style2);

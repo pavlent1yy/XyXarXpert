@@ -26,16 +26,22 @@
                 <p>Присоединяйся к нам</p>
             </div>
 
-            <form class="register-form" th:action="@{/auth/register}" th:object="${registerRequest}" method="post">
-                <!-- Имя и Отчество в одну строку -->
+            <!-- Ошибки валидации -->
+            <div th:if="${param.error}" class="error-message">
+                <span class="error-icon">⚠️</span>
+                <span th:text="${param.error}"></span>
+            </div>
+
+            <form class="register-form" th:action="@{/auth/register}" th:object="${registerRequest}" method="post" novalidate>
+                <!-- Имя и Фамилия в одну строку -->
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="first_name">Имя</label>
+                    <div class="form-group" th:classappend="${#fields.hasErrors('firstName')} ? 'error'">
+                        <label for="firstName">Имя</label>
                         <div class="input-wrapper">
                             <input
                                     type="text"
-                                    id="first_name"
-                                    name="first_name"
+                                    id="firstName"
+                                    name="firstName"
                                     class="form-input"
                                     placeholder="Иван"
                                     th:field="*{firstName}"
@@ -43,15 +49,18 @@
                             >
                             <span class="input-icon">👤</span>
                         </div>
+                        <div class="field-error" th:if="${#fields.hasErrors('firstName')}">
+                            <span th:errors="*{firstName}"></span>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="last_name">Фамилия</label>
+                    <div class="form-group" th:classappend="${#fields.hasErrors('lastName')} ? 'error'">
+                        <label for="lastName">Фамилия</label>
                         <div class="input-wrapper">
                             <input
                                     type="text"
-                                    id="last_name"
-                                    name="last_name"
+                                    id="lastName"
+                                    name="lastName"
                                     class="form-input"
                                     placeholder="Иванов"
                                     th:field="*{lastName}"
@@ -59,17 +68,20 @@
                             >
                             <span class="input-icon">👤</span>
                         </div>
+                        <div class="field-error" th:if="${#fields.hasErrors('lastName')}">
+                            <span th:errors="*{lastName}"></span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Отчество (опционально) -->
                 <div class="form-group">
-                    <label for="middle_name">Отчество <span class="optional">(опционально)</span></label>
+                    <label for="middleName">Отчество <span class="optional">(опционально)</span></label>
                     <div class="input-wrapper">
                         <input
                                 type="text"
-                                id="middle_name"
-                                name="middle_name"
+                                id="middleName"
+                                name="middleName"
                                 class="form-input"
                                 placeholder="Иванович"
                                 th:field="*{middleName}"
@@ -79,7 +91,7 @@
                 </div>
 
                 <!-- Email -->
-                <div class="form-group">
+                <div class="form-group" th:classappend="${#fields.hasErrors('email')} ? 'error'">
                     <label for="email">Электронная почта</label>
                     <div class="input-wrapper">
                         <input
@@ -93,11 +105,14 @@
                         >
                         <span class="input-icon">✉️</span>
                     </div>
+                    <div class="field-error" th:if="${#fields.hasErrors('email')}">
+                        <span th:errors="*{email}"></span>
+                    </div>
                 </div>
 
                 <!-- Пароль и Подтверждение в одну строку -->
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group" th:classappend="${#fields.hasErrors('password')} ? 'error'">
                         <label for="password">Пароль</label>
                         <div class="input-wrapper">
                             <input
@@ -113,15 +128,18 @@
                                 👁️
                             </button>
                         </div>
+                        <div class="field-error" th:if="${#fields.hasErrors('password')}">
+                            <span th:errors="*{password}"></span>
+                        </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'error'">
                         <label for="confirmPassword">Подтверди пароль</label>
                         <div class="input-wrapper">
                             <input
                                     type="password"
                                     id="confirmPassword"
-                                    name="password_confirm"
+                                    name="confirmPassword"
                                     class="form-input"
                                     placeholder="••••••••"
                                     th:field="*{confirmPassword}"
@@ -130,6 +148,9 @@
                             <button type="button" class="toggle-password" data-target="confirmPassword">
                                 👁️
                             </button>
+                        </div>
+                        <div class="field-error" th:if="${#fields.hasErrors('confirmPassword')}">
+                            <span th:errors="*{confirmPassword}"></span>
                         </div>
                     </div>
                 </div>
@@ -169,7 +190,7 @@
 
             <!-- Вход -->
             <div class="form-footer">
-                <p>Уже есть аккаунт? <a th:href="@{/auth/login}" href="#" class="signin-link">Войди</a></p>
+                <p>Уже есть аккаунт? <a th:href="@{/auth/login}" class="signin-link">Войди</a></p>
             </div>
         </div>
 
@@ -212,7 +233,7 @@
 
 <!-- Линия снизу -->
 <div class="register-footer">
-    <a th:href="@{/}" href="/" class="back-link">← На главную</a>
+    <a th:href="@{/}" class="back-link">← На главную</a>
     <div class="footer-info">
         <span>© 2026 XXX</span>
         <span class="separator">•</span>

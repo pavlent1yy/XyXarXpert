@@ -63,6 +63,18 @@
                 <p>Введи код, который мы отправили</p>
             </div>
 
+            <!-- Ошибка верификации -->
+            <div class="error-message" th:if="${error}">
+                <span class="error-icon">⚠️</span>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Успешная верификация -->
+            <div class="success-message" th:if="${message}">
+                <span class="success-icon">✓</span>
+                <span th:text="${message}"></span>
+            </div>
+
             <form class="verify-form" th:action="@{/auth/verify}" method="post">
                 <!-- Email -->
                 <div class="form-group">
@@ -100,12 +112,6 @@
                     <div class="input-helper">6-значный код из письма</div>
                 </div>
 
-                <!-- Ошибка -->
-                <div class="error-message" th:if="${error}">
-                    <span class="error-icon">⚠️</span>
-                    <span th:text="${error}"></span>
-                </div>
-
                 <!-- Кнопка подтверждения -->
                 <button type="submit" class="btn-verify">
                     <span>Подтвердить</span>
@@ -115,13 +121,13 @@
                 <!-- Резервная ссылка -->
                 <div class="resend-section">
                     <p>Не получил код?</p>
-                    <button type="button" class="resend-link">Отправить код повторно</button>
+                    <button type="button" class="resend-link" th:data-email="${email}">Отправить код повторно</button>
                 </div>
             </form>
 
             <!-- Навигация -->
             <div class="form-footer">
-                <a th:href="@{/login}" href="/login" class="back-to-login">Вернуться ко входу</a>
+                <a th:href="@{/auth/login}" class="back-to-login">Вернуться ко входу</a>
             </div>
         </div>
 

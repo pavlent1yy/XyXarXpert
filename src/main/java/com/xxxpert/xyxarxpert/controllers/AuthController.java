@@ -21,7 +21,6 @@ public class AuthController {
     private final EmailService emailService;
 
 
-
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("user", new User());
