@@ -43,7 +43,6 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
 
-
     @Override
     public String toString() {
         return "User{" +
