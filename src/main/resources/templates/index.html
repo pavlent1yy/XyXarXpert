@@ -1,71 +1,16 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XXX - Сервисный центр мобильных телефонов</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
-    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" th:href="@{/css/pages/home.css}" href="home.css">
 </head>
 <body>
-<!-- Мобильное меню -->
-<div class="mobile-menu">
-    <div class="menu-header">
-        <h3>Menu</h3>
-        <button class="menu-close">&times;</button>
-    </div>
-    <nav class="menu-nav">
-        <a href="#services" class="menu-link">Услуги</a>
-        <a href="#about" class="menu-link">О нас</a>
-        <a href="#contacts" class="menu-link">Контакты</a>
-        <div class="menu-divider"></div>
-        <div class="menu-section-title">Виды услуг</div>
-        <a href="#services" class="menu-service">Замена экрана</a>
-        <a href="#services" class="menu-service">Батарея</a>
-        <a href="#services" class="menu-service">Динамик</a>
-        <a href="#services" class="menu-service">Камера</a>
-        <a href="#services" class="menu-service">Зарядка</a>
-        <a href="#services" class="menu-service">Железо</a>
-        <a href="#services" class="menu-service">ПО & ласт</a>
-        <a href="#services" class="menu-service">Данные</a>
-    </nav>
-</div>
-
-<!-- Оверлей для меню -->
-<div class="menu-overlay"></div>
-
-<!-- Навигация -->
-<nav class="navbar">
-    <div class="container-nav">
-        <button class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="logo-wrapper">
-            <div class="logo">
-                <span class="x1">X</span><span class="x2">X</span><span class="x3">X</span>
-                <div class="logo-full">
-                    <span class="letter" style="color: #f79a24;">y</span>
-                    <span class="letter" style="color: #f79a24;">X</span>
-                    <span class="letter" style="color: #f79a24;">a</span>
-                    <span class="letter" style="color: #f79a24;">r</span>
-                    <span class="letter" style="color: #f79a24;">X</span>
-                    <span class="letter" style="color: #0d27c4;">p</span>
-                    <span class="letter" style="color: #0d27c4;">e</span>
-                    <span class="letter" style="color: #0d27c4;">r</span>
-                    <span class="letter" style="color: #0d27c4;">t</span>
-                </div>
-            </div>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="#services">Услуги</a></li>
-            <li><a href="#about">О нас</a></li>
-            <li><a href="#contacts">Контакты</a></li>
-        </ul>
-    </div>
-</nav>
+<!-- Header -->
+<div th:insert="fragments/header.html"></div>
 
 <!-- Героический раздел -->
 <section id="hero" class="hero">
@@ -74,12 +19,183 @@
             <div class="hero-label">// Мобильный сервис</div>
             <h1>Когда телефон в<br><span class="accent">беде</span></h1>
             <p>Быстрое и качественное обслуживание без лишних слов</p>
-            <button class="btn btn-primary">Заказать ремонт</button>
+            <button class="btn btn-primary" id="orderBtn" sec:authorize="isAuthenticated()">Заказать ремонт</button>
+            <a href="/auth/register" class="btn btn-primary" sec:authorize="isAnonymous()">Зарегистрироваться</a>
         </div>
         <div class="hero-visual">
             <div class="phone-mockup">
                 <div class="phone-screen"></div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- Форма заказа (скрыта по умолчанию) -->
+<section id="repair-form-section" class="repair-form-section" style="display: none;" sec:authorize="isAuthenticated()">
+    <div class="container">
+        <div class="repair-form-container">
+            <div class="repair-form-header">
+                <button class="close-form" id="closeFormBtn">✕</button>
+                <h2>Заказать ремонт</h2>
+                <p>Расскажите о проблеме, и мы подготовим смету и время ремонта</p>
+            </div>
+
+            <!-- Сообщения об ошибках -->
+            <div class="form-message error-message" style="display: none;" id="formError">
+                <span class="message-icon">⚠️</span>
+                <span id="errorText"></span>
+            </div>
+
+            <form class="repair-form" th:action="@{/repair-request}" method="post" id="repairRequestForm">
+                <!-- Модель телефона -->
+                <div class="form-group">
+                    <label for="phoneModel">Модель вашего телефона</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="text"
+                                id="phoneModel"
+                                name="phoneModel"
+                                class="form-input"
+                                placeholder="Например: iPhone 14 Pro, Samsung Galaxy S23, Xiaomi 13..."
+                                maxlength="100"
+                                required
+                        >
+                        <span class="input-icon">📱</span>
+                    </div>
+                    <div class="input-helper">Укажите точную модель для правильной диагностики</div>
+                </div>
+
+                <!-- Тип проблемы -->
+                <div class="form-group">
+                    <label for="issueType">В чём основная проблема?</label>
+                    <select id="issueType" name="issueType" class="form-input form-select" required>
+                        <option value="">-- Выберите проблему --</option>
+                        <optgroup label="Дисплей и корпус">
+                            <option value="SCREEN">Разбит, потрескался или не работает экран</option>
+                            <option value="HOUSING">Повреждение корпуса (трещины, вмятины)</option>
+                        </optgroup>
+                        <optgroup label="Электроника">
+                            <option value="BATTERY">Батарея быстро разряжается или не держит заряд</option>
+                            <option value="CHARGING">Телефон не заря��ается или медленно заряжается</option>
+                            <option value="SPEAKER">Динамик не работает, плохо слышно звук</option>
+                            <option value="MICROPHONE">Микрофон не работает или плохо записывает</option>
+                        </optgroup>
+                        <optgroup label="Камера и сенсоры">
+                            <option value="CAMERA">Камера не работает или повреждена</option>
+                            <option value="SENSORS">Датчики неисправны (GPS, акселерометр и т.д.)</option>
+                        </optgroup>
+                        <optgroup label="Программное обеспечение">
+                            <option value="SOFTWARE">Телефон зависает, тормозит или перезагружается</option>
+                            <option value="DATA_RECOVERY">Потеря данных, нужно восстановить файлы</option>
+                        </optgroup>
+                        <optgroup label="Прочее">
+                            <option value="HARDWARE">Другая аппаратная неисправность</option>
+                            <option value="OTHER">Другая проблема</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Краткое описание -->
+                <div class="form-group">
+                    <label for="title">Описание проблемы (коротко)</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                class="form-input"
+                                placeholder="Например: Экран после падения не включается"
+                                maxlength="255"
+                                required
+                        >
+                        <span class="input-icon">📝</span>
+                    </div>
+                    <div class="input-helper">Одно-два предложения о главной проблеме</div>
+                </div>
+
+                <!-- Подробное описание -->
+                <div class="form-group">
+                    <label for="description">Подробно расскажите, что произошло</label>
+                    <div class="textarea-wrapper">
+                            <textarea
+                                    id="description"
+                                    name="description"
+                                    class="form-input form-textarea"
+                                    placeholder="Опишите как это произошло, когда началась проблема, что вы уже пробовали делать..."
+                                    rows="4"
+                                    maxlength="2000"
+                                    required
+                            ></textarea>
+                        <div class="textarea-counter">
+                            <span id="charCount">0</span>/2000
+                        </div>
+                    </div>
+                    <div class="input-helper">Чем больше информации, тем точнее мы сможем помочь</div>
+                </div>
+
+                <!-- Способ связи и контакт -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactType">Способ связи</label>
+                        <select id="contactType" name="contactType" class="form-input form-select" required>
+                            <option value="">-- Выберите способ --</option>
+                            <option value="PHONE">Телефон</option>
+                            <option value="EMAIL">Email</option>
+                            <option value="TELEGRAM">Telegram</option>
+                            <option value="WHATSAPP">WhatsApp</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactValue">Ваш контакт</label>
+                        <div class="input-wrapper">
+                            <input
+                                    type="text"
+                                    id="contactValue"
+                                    name="contactValue"
+                                    class="form-input"
+                                    placeholder="+7 (999) 123-45-67 или email@example.com"
+                                    maxlength="150"
+                                    required
+                            >
+                            <span class="input-icon">📞</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Срочность -->
+                <div class="form-group">
+                    <label for="priority">Насколько это срочно?</label>
+                    <select id="priority" name="priority" class="form-input form-select" required>
+                        <option value="LOW">Обычный ремонт — готово за 3-5 дней</option>
+                        <option value="MEDIUM" selected>Стандартный — готово за 1-2 дня</option>
+                        <option value="HIGH">Срочный — готово в течение суток (переплата +30%)</option>
+                    </select>
+                    <div class="priority-warning" id="priorityWarning" style="display: none;">
+                        <span class="warning-icon">⏰</span>
+                        <span>При срочном ремонте добавляется доплата за приоритет</span>
+                    </div>
+                </div>
+
+                <!-- Чек-бокс согласия -->
+                <div class="form-checkbox">
+                    <label class="checkbox-custom">
+                        <input type="checkbox" name="agree" required>
+                        <span>Я согласен с тем, что мастер свяжется со мной для уточнения деталей и предварительной сметы</span>
+                    </label>
+                </div>
+
+                <!-- Кнопка отправки -->
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <span>Отправить заявку</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+
+                <div class="form-hint">
+                    <span class="hint-icon">ℹ️</span>
+                    <span>Мы обработаем вашу заявку и свяжемся в течение часа</span>
+                </div>
+            </form>
         </div>
     </div>
 </section>
@@ -97,19 +213,19 @@
                 <div class="service-large">
                     <div class="service-number">01</div>
                     <h3>Замена экрана</h3>
-                    <p>Восстанавливаем разбитые и повреждённые дисплеи. Оригинальные запчасти с гарантией качества.</p>
+                    <p>Восстанавливаем разбитые и потемневшие дисплеи. Используем только оригинальные или проверенные аналоги. После ремонта экран работает как новый.</p>
                     <div class="service-meta">
-                        <span class="time">2-4 часа</span>
-                        <span class="price">от 50$</span>
+                        <span class="time">⏱ 2-4 часа</span>
+                        <span class="price">💰 от 3500₽</span>
                     </div>
                 </div>
                 <div class="service-large">
                     <div class="service-number">02</div>
-                    <h3>Батарея</h3>
-                    <p>Замена батареи на новую или восстановление ёмкости. Ваш телефон снова будет держать заряд.</p>
+                    <h3>Замена батареи</h3>
+                    <p>Если телефон быстро разряжается или вообще не заряжается — это батарея. Мы заменим её на новую с гарантией, и ваш телефон проработает ещё много лет.</p>
                     <div class="service-meta">
-                        <span class="time">30 минут</span>
-                        <span class="price">от 30$</span>
+                        <span class="time">⏱ 30 минут</span>
+                        <span class="price">💰 от 1500₽</span>
                     </div>
                 </div>
             </div>
@@ -118,26 +234,32 @@
                 <div class="service-card">
                     <div class="card-icon">🔊</div>
                     <h4>Динамик</h4>
+                    <p class="card-desc">Слышно плохо или совсем не слышно</p>
                 </div>
                 <div class="service-card">
                     <div class="card-icon">📷</div>
                     <h4>Камера</h4>
+                    <p class="card-desc">Не фокусируется или не включается</p>
                 </div>
                 <div class="service-card">
                     <div class="card-icon">⚡</div>
                     <h4>Зарядка</h4>
+                    <p class="card-desc">Порт не работает или шатается</p>
                 </div>
                 <div class="service-card">
                     <div class="card-icon">🔧</div>
-                    <h4>Железо</h4>
-                </div>
-                <div class="service-card">
-                    <div class="card-icon">🛡️</div>
-                    <h4>ПО & ласт</h4>
+                    <h4>Аппаратура</h4>
+                    <p class="card-desc">Внутренние компоненты</p>
                 </div>
                 <div class="service-card">
                     <div class="card-icon">💾</div>
+                    <h4>Программное</h4>
+                    <p class="card-desc">Глюки, зависания, торможение</p>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🔐</div>
                     <h4>Данные</h4>
+                    <p class="card-desc">Восстановление удалённых файлов</p>
                 </div>
             </div>
         </div>
@@ -151,15 +273,15 @@
             <div class="about-left">
                 <div class="about-card">
                     <h2>XyXarXpert</h2>
-                    <p>Это не просто сервис. Это место, где мастера с опытом спасают твой телефон как врачи спасают пациента.</p>
+                    <p>Мы не просто чиним телефоны — мы даём им вторую жизнь. Каждый устройство — это чья-то связь с миром, и мы это уважаем. За 10 лет работы мы научились чинить всё, от экранов до материнских плат.</p>
                     <div class="stats-mini">
                         <div class="stat">
-                            <span class="number">5K+</span>
+                            <span class="number">5000+</span>
                             <span class="label">Спасённых телефонов</span>
                         </div>
                         <div class="stat">
                             <span class="number">10+</span>
-                            <span class="label">Лет опыта</span>
+                            <span class="label">Лет на рынке</span>
                         </div>
                     </div>
                 </div>
@@ -169,23 +291,23 @@
                 <div class="about-features">
                     <div class="feature-item">
                         <div class="feature-num">1</div>
-                        <h3>Профессионалы</h3>
-                        <p>Мастера с реальным опытом ремонта</p>
+                        <h3>Опытные мастера</h3>
+                        <p>Каждый в нашей команде знает телефоны изнутри и снаружи</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-num">2</div>
-                        <h3>Оригинал</h3>
-                        <p>Только качественные запчасти</p>
+                        <h3>Качественные запчасти</h3>
+                        <p>Не берём дешёвые аналоги, только проверенные компоненты</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-num">3</div>
-                        <h3>Быстро</h3>
-                        <p>Большинство работ за 1-2 часа</p>
+                        <h3>Быстро и честно</h3>
+                        <p>Говорим цену до работы, переделываем без доплат</p>
                     </div>
                     <div class="feature-item">
                         <div class="feature-num">4</div>
-                        <h3>Гарантия</h3>
-                        <p>На все виды выполняемых работ</p>
+                        <h3>Гарантия на всё</h3>
+                        <p>Если что-то пошло не так — переделаем бесплатно</p>
                     </div>
                 </div>
             </div>
@@ -204,26 +326,26 @@
         <div class="process-steps">
             <div class="step">
                 <div class="step-circle">1</div>
-                <h3>Диагностика</h3>
-                <p>Определяем проблему бесплатно</p>
+                <h3>Заявка</h3>
+                <p>Заполняете форму и рассказываете о проблеме</p>
             </div>
             <div class="step-arrow">→</div>
             <div class="step">
                 <div class="step-circle">2</div>
-                <h3>Согласование</h3>
-                <p>Обсуждаем цену и время</p>
+                <h3>Диагностика</h3>
+                <p>Мастер смотрит телефон и говорит точную цену</p>
             </div>
             <div class="step-arrow">→</div>
             <div class="step">
                 <div class="step-circle">3</div>
                 <h3>Ремонт</h3>
-                <p>Исправляем за 1-24 часа</p>
+                <p>Чиним, тестируем, проверяем всё два раза</p>
             </div>
             <div class="step-arrow">→</div>
             <div class="step">
                 <div class="step-circle">4</div>
                 <h3>Готово</h3>
-                <p>Получаешь рабочий телефон</p>
+                <p>Отдаём рабочий телефон с гарантией</p>
             </div>
         </div>
     </div>
@@ -254,33 +376,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="contact-form">
-                <h3>Быстрая заявка</h3>
-                <form>
-                    <input type="text" placeholder="Имя" required>
-                    <input type="email" placeholder="Email" required>
-                    <input type="tel" placeholder="Телефон" required>
-                    <textarea placeholder="Описание проблемы" rows="4" required></textarea>
-                    <button type="submit" class="btn btn-primary">Отправить</button>
-                </form>
-            </div>
         </div>
     </div>
 </section>
 
-<!-- Подвал -->
-<footer class="footer">
-    <div class="container">
-        <p>© 2026 XXX - <span>XyXarXpert</span>. Все права защищены.</p>
-        <div class="footer-links">
-            <a href="#">VK</a>
-            <a href="#">Telegram</a>
-            <a href="#">Instagram</a>
-        </div>
-    </div>
-</footer>
+<!-- Footer -->
+<div th:insert="fragments/footer.html"></div>
 
-<script src="script.js"></script>
+<script th:src="@{/js/home.js}" src="home.js"></script>
 </body>
 </html>
