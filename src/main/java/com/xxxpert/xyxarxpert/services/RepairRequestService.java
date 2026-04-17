@@ -88,4 +88,9 @@ public class RepairRequestService {
         return value == null ? null : value.trim();
     }
 
+    public List<RepairRequest> getMyRequests(){
+        User user = util.getCurrentUser();
+        return repairRequestRepository.findAllByUser(user);
+    }
+
 }

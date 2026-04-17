@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/profile.css}" href="profile.css">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header.html}"></div>
+
+<!-- Основной контент профиля -->
+<section class="profile-section">
+    <div class="container">
+        <div class="profile-breadcrumb">
+            <a href="/">Главная</a>
+            <span class="separator">→</span>
+            <span>Профиль</span>
+        </div>
+
+        <!-- Карточка профиля -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <!-- Аватар -->
+                <div class="profile-avatar">
+                    <div class="avatar-placeholder">
+<!--                        <span th:text="${#strings.charAt(user.firstName, 0)}">A</span>-->
+                    </div>
+                    <div class="avatar-overlay">
+                        <button class="avatar-upload">📷</button>
+                    </div>
+                </div>
+
+                <!-- Информация пользователя -->
+                <div class="profile-info">
+                    <div class="profile-name">
+                        <h1 th:text="${user.firstName + ' ' + user.lastName}">Иван Иванов</h1>
+                        <!-- Бейдж роли если не user -->
+                        <div class="role-badge" th:if="${user.role != 'user'}" th:classappend="${'role-' + user.role.toLowerCase()}">
+                            <span class="role-icon">⭐</span>
+                            <span th:text="${user.role == 'master' ? 'Мастер' : (user.role == 'admin' ? 'Администратор' : 'Владелец')}"></span>
+                        </div>
+                    </div>
+                    <p class="profile-email" th:text="${user.email}">user@example.com</p>
+                    <p class="profile-member">
+                        <span class="member-icon">📅</span>
+                        <span>Участник с </span>
+                        <span th:text="${#temporals.format(user.registeredAt, 'dd MMMM yyyy')}"></span>
+                    </p>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="profile-actions">
+                    <a href="#" class="btn-action btn-edit">
+                        <span>✏️</span>
+                        Редактировать
+                    </a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn-action btn-logout">
+                            <span>🚪</span>
+                            Выход
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Дополнительная информация -->
+            <div class="profile-details">
+                <div class="detail-row">
+                    <div class="detail-label">Полное имя</div>
+                    <div class="detail-value">
+                        <span th:text="${user.firstName + ' ' + (user.middleName != null ? user.middleName + ' ' : '') + user.lastName}">Иван Иванович Иванов</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">
+                        <span th:text="${user.email}">user@example.com</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Статус</div>
+                    <div class="detail-value">
+                            <span class="status-badge" th:classappend="${user.enabled ? 'status-active' : 'status-inactive'}">
+                                <span class="status-dot"></span>
+                                <span th:text="${user.enabled ? 'Активен' : 'Неактивен'}"></span>
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция заявок на ремонт (только для обычных пользователей и если есть заявки) -->
+        <div class="repairs-section" th:if="${user.role == 'user' or user.role == 'ROLE_USER'}">
+            <div class="section-header">
+                <h2>Мои заявки на ремонт</h2>
+                <div class="header-line"></div>
+            </div>
+
+            <!-- Если есть заявки -->
+            <div th:if="${repairRequests != null and repairRequests.size() > 0}">
+                <!-- Фильтры статуса -->
+                <div class="repairs-filters">
+                    <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="CREATED">Новая</button>
+                    <button class="filter-btn" data-filter="IN_PROGRESS">В работе</button>
+                    <button class="filter-btn" data-filter="COMPLETED">Готова</button>
+                    <button class="filter-btn" data-filter="CANCELLED">Отменена</button>
+                </div>
+
+                <!-- Список заявок -->
+                <div class="repairs-list">
+                    <div class="repair-item" th:each="request : ${repairRequests}" th:classappend="${'status-' + request.status.toLowerCase()}">
+                        <div class="repair-header">
+                            <div class="repair-title-block">
+                                <h3 th:text="${request.title}">Разбит экран</h3>
+                                <p class="repair-model" th:text="${request.phoneModel}">iPhone 14 Pro</p>
+                            </div>
+                            <div class="repair-status">
+                                <span class="status-label" th:classappend="${'label-' + request.status.toLowerCase()}" th:text="${request.status == 'CREATED' ? 'Новая' : (request.status == 'IN_PROGRESS' ? 'В работе' : (request.status == 'COMPLETED' ? 'Готова' : 'Отменена'))}"></span>
+                            </div>
+                        </div>
+
+                        <div class="repair-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">🔧</span>
+                                <span class="meta-label">Проблема</span>
+                                <span class="meta-value" th:text="${request.issueType}">SCREEN</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon" th:classappend="${request.priority == 'HIGH' ? 'priority-high' : (request.priority == 'MEDIUM' ? 'priority-medium' : 'priority-low')}">⚡</span>
+                                <span class="meta-label">Срочность</span>
+                                <span class="meta-value" th:text="${request.priority == 'HIGH' ? 'Срочный' : (request.priority == 'MEDIUM' ? 'Стандартный' : 'Обычный')}"></span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                <span class="meta-label">Создана</span>
+                                <span class="meta-value" th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">10.01.2024 14:30</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📞</span>
+                                <span class="meta-label">Контакт</span>
+                                <span class="meta-value" th:text="${request.contactValue}">+7 (999) 123-45-67</span>
+                            </div>
+                        </div>
+
+                        <div class="repair-description">
+                            <p th:text="${request.description}">Описание проблемы</p>
+                        </div>
+
+                        <div class="repair-actions">
+                            <button class="btn-action-small btn-view" th:data-id="${request.id}">
+                                <span>👁️</span>
+                                Подробнее
+                            </button>
+                            <button class="btn-action-small btn-edit" th:if="${request.status == 'CREATED'}" th:data-id="${request.id}">
+                                <span>✏️</span>
+                                Редактировать
+                            </button>
+                            <button class="btn-action-small btn-cancel" th:if="${request.status != 'DONE' and request.status != 'CANCELLED'}" th:data-id="${request.id}">
+                                <span>🗑️</span>
+                                Отменить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Если нет заявок -->
+            <div class="empty-state" th:unless="${repairRequests != null and repairRequests.size() > 0}">
+                <div class="empty-icon">📋</div>
+                <h3>Заявок на ремонт нет</h3>
+                <p>Вы ещё не создавали заявок на ремонт</p>
+                <a href="/" class="btn btn-primary">Создать заявку</a>
+            </div>
+        </div>
+
+        <!-- Информация для мастеров -->
+        <div class="master-section" th:if="${user.role == 'master' or user.role == 'ROLE_MASTER'}">
+            <div class="section-header">
+                <h2>Информация мастера</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="info-box">
+                <p>Вы авторизованы как мастер сервисного центра. Ваше назначение — выполнять диагностику и ремонт телефонов.</p>
+                <p>Перейдите в <a href="/admin/dashboard">панель управления</a> для просмотра новых заявок и управления статусами.</p>
+            </div>
+        </div>
+
+        <!-- Информация для администраторов -->
+        <div class="admin-section" th:if="${user.role == 'admin' or user.role == 'ROLE_ADMIN'}">
+            <div class="section-header">
+                <h2>Панель администратора</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="admin-links">
+                <a href="/admin/dashboard" class="admin-link">
+                    <span class="link-icon">📊</span>
+                    <span class="link-text">Панель управления</span>
+                </a>
+                <a href="/admin/users" class="admin-link">
+                    <span class="link-icon">👥</span>
+                    <span class="link-text">Управление пользователями</span>
+                </a>
+                <a href="/admin/requests" class="admin-link">
+                    <span class="link-icon">📋</span>
+                    <span class="link-text">Все заявки</span>
+                </a>
+                <a href="/admin/settings" class="admin-link">
+                    <span class="link-icon">⚙️</span>
+                    <span class="link-text">Настройки сайта</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Информация для владельца -->
+        <div class="owner-section" th:if="${user.role == 'owner' or user.role == 'ROLE_OWNER'}">
+            <div class="section-header">
+                <h2>Панель владельца</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="owner-links">
+                <a href="/owner/dashboard" class="admin-link">
+                    <span class="link-icon">💼</span>
+                    <span class="link-text">Аналитика и статистика</span>
+                </a>
+                <a href="/owner/finances" class="admin-link">
+                    <span class="link-icon">💰</span>
+                    <span class="link-text">Финансы</span>
+                </a>
+                <a href="/owner/team" class="admin-link">
+                    <span class="link-icon">👥</span>
+                    <span class="link-text">Управление командой</span>
+                </a>
+                <a href="/owner/settings" class="admin-link">
+                    <span class="link-icon">⚙️</span>
+                    <span class="link-text">Основные параметры</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer.html}"></div>
+
+<script th:src="@{/js/profile.js}" src="profile.js"></script>
+</body>
+</html>
