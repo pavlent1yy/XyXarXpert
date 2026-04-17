@@ -77,4 +77,21 @@ public class RepairRequest {
     private String contactValue;
 
 
+    @Override
+    public String toString() {
+        return "RepairRequest{" +
+                "id=" + id +
+                ", user=" + user +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", priority='" + priority + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", phoneModel='" + phoneModel + '\'' +
+                ", issueType='" + issueType + '\'' +
+                ", contactType='" + contactType + '\'' +
+                ", contactValue='" + contactValue + '\'' +
+                '}';
+    }
 }

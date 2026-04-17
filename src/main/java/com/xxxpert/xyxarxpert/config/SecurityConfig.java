@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/auth/login", "/auth/register",  "/auth/verify**", "/css/**", "/js/**").permitAll()
+                        .requestMatchers( "/auth/login", "/auth/register",  "/auth/verify**", "/main", "/css/**", "/js/**").permitAll()
 //                        .requestMatchers("/products/create").hasAnyRole("SELLER", "ADMIN")
                         .anyRequest().authenticated()
                 ).userDetailsService(userDetailsService)
@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .loginPage("/auth/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/products")
+                        .defaultSuccessUrl("/main")
                         .permitAll()
                 )
                 .logout(logout -> logout

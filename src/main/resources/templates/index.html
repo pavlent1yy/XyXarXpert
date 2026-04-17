@@ -10,8 +10,7 @@
 </head>
 <body>
 <!-- Header -->
-<div th:insert="fragments/header.html"></div>
-
+<div th:replace="~{fragments/header.html}"></div>
 <!-- Героический раздел -->
 <section id="hero" class="hero">
     <div class="hero-content">
@@ -76,7 +75,7 @@
                         </optgroup>
                         <optgroup label="Электроника">
                             <option value="BATTERY">Батарея быстро разряжается или не держит заряд</option>
-                            <option value="CHARGING">Телефон не заря��ается или медленно заряжается</option>
+                            <option value="CHARGING">Телефон не заряжаается или медленно заряжается</option>
                             <option value="SPEAKER">Динамик не работает, плохо слышно звук</option>
                             <option value="MICROPHONE">Микрофон не работает или плохо записывает</option>
                         </optgroup>
@@ -381,7 +380,7 @@
 </section>
 
 <!-- Footer -->
-<div th:insert="fragments/footer.html"></div>
+<div th:replace="~{fragments/footer.html}"></div>
 
 <script th:src="@{/js/home.js}" src="home.js"></script>
 </body>
