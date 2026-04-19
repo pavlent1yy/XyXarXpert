@@ -65,16 +65,26 @@ public class RepairRequest {
     @ColumnDefault("'UNKNOWN'")
     @Column(name = "issue_type", nullable = false, length = 100)
     private String issueType;
+
     @Size(max = 50)
     @NotNull
     @ColumnDefault("'PHONE'")
     @Column(name = "contact_type", nullable = false, length = 50)
     private String contactType;
+
     @Size(max = 150)
     @NotNull
     @ColumnDefault("'UNKNOWN'")
     @Column(name = "contact_value", nullable = false, length = 150)
     private String contactValue;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_id", referencedColumnName = "id")
+    private User master;
+    
+    @Size(max = 512)
+    @Column(name = "stream_link", length = 512)
+    private String streamLink;
 
 
     @Override
