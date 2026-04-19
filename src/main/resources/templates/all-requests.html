@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новые заявки - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/all-requests.css}" href="all-requests.css">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header.html}"></div>
+
+<!-- Основной контент -->
+<section class="requests-section">
+    <div class="container">
+        <div class="requests-breadcrumb">
+            <a href="/">Главная</a>
+            <span class="separator">→</span>
+            <span>Новые заявки</span>
+        </div>
+
+        <!-- Заголовок и фильтры -->
+        <div class="requests-header">
+            <div class="header-title">
+                <h1>Новые заявки на ремонт</h1>
+                <p>Заявки, ожидающие принятия мастером</p>
+            </div>
+
+            <div class="requests-stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="totalCount" th:text="${repairRequests.size()}">0</span>
+                    <span class="stat-label">Всего заявок</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="urgentCount" th:text="${urgentCount}">0</span>
+                    <span class="stat-label">Срочных</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сортировка и поиск -->
+        <div class="requests-controls">
+            <div class="search-box">
+                <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Поиск по названию, модели или телефону..."
+                        class="search-input"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="sort-box">
+                <select id="sortSelect" class="sort-select">
+                    <option value="newest">Самые новые</option>
+                    <option value="oldest">Самые старые</option>
+                    <option value="priority">По срочности</option>
+                    <option value="title">По названию</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Сообщение об отсутствии заявок -->
+        <div class="empty-state" th:if="${repairRequests.size() == 0}">
+            <div class="empty-icon">📭</div>
+            <h3>Нет новых заявок</h3>
+            <p>Все заявки уже распределены между мастерами</p>
+        </div>
+
+        <!-- Список заявок -->
+        <div class="requests-grid" th:if="${repairRequests.size() > 0}">
+            <div class="request-card" th:each="request : ${repairRequests}" th:data-id="${request.id}" th:data-priority="${request.priority}">
+                <!-- Заголовок карточки -->
+                <div class="card-header">
+                    <div class="card-title-block">
+                        <h3 th:text="${request.title}">Разбит экран</h3>
+                        <p class="card-phone" th:text="${request.phoneModel}">iPhone 14 Pro</p>
+                    </div>
+                    <div class="card-badges">
+                        <span class="priority-badge" th:classappend="${'priority-' + request.priority.toLowerCase()}" th:text="${request.priority == 'HIGH' ? 'Срочно' : (request.priority == 'MEDIUM' ? 'Стандарт' : 'Обычно')}"></span>
+                    </div>
+                </div>
+
+                <!-- Информация заявки -->
+                <div class="card-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">📋 Проблема:</span>
+                        <span class="meta-value" th:text="${request.issueType}">SCREEN</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">👤 Клиент:</span>
+                        <span class="meta-value" th:text="${request.user.firstName + ' ' + request.user.lastName}">Иван Иванов</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label" th:text="${request.contactType == 'PHONE' ? '📞' : (request.contactType == 'EMAIL' ? '📧' : '💬')}"></span>
+                        <span class="meta-value" th:text="${request.contactValue}">+7 (999) 123-45-67</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">⏰ Создана:</span>
+                        <span class="meta-value" th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">10.01.2024 14:30</span>
+                    </div>
+                </div>
+
+                <!-- Описание проблемы -->
+                <div class="card-description">
+                    <p class="description-text"
+                       th:text="${#strings.length(request.description) > 150
+                             ? #strings.substring(request.description, 0, 150)
+                             : request.description}">
+                    </p>
+                    <button class="btn-expand" th:data-id="${request.id}">Читать полностью</button>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="card-actions">
+                    <button class="btn-accept" th:data-id="${request.id}">
+                        <span>✓</span>
+                        Принять
+                    </button>
+                    <button class="btn-reject" th:data-id="${request.id}">
+                        <span>✕</span>
+                        Отклонить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Модал для подробного просмотра -->
+<div class="modal modal-details" id="detailsModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Название заявки</h2>
+            <button class="modal-close" id="closeDetailsModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <span class="detail-label">Полное описание:</span>
+                <p id="modalDescription" class="detail-text">Описание проблемы</p>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Модель телефона:</span>
+                <span id="modalPhone" class="detail-value">iPhone 14 Pro</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Тип проблемы:</span>
+                <span id="modalIssue" class="detail-value">SCREEN</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Приоритет:</span>
+                <span id="modalPriority" class="detail-value">MEDIUM</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Клиент:</span>
+                <span id="modalClient" class="detail-value">Иван Иванов</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Контакт:</span>
+                <span id="modalContact" class="detail-value">+7 (999) 123-45-67</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модал для отклонения заявки -->
+<div class="modal modal-reject" id="rejectModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Отклонить заявку</h2>
+            <button class="modal-close" id="closeRejectModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Укажите причину отклонения заявки. Клиент получит это сообщение.</p>
+            <textarea
+                    id="rejectReason"
+                    class="reject-textarea"
+                    placeholder="Например: На данный момент заняты другими ремонтами, приносим свои извинения..."
+                    maxlength="500"
+            ></textarea>
+            <div class="char-counter">
+                <span id="charCount">0</span>/500
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelRejectBtn">Отмена</button>
+            <button class="btn-confirm" id="confirmRejectBtn">Отклонить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Успешное сообщение -->
+<div class="success-toast" id="successToast" style="display: none;">
+    <span class="toast-icon">✓</span>
+    <span class="toast-text" id="toastText">Заявка принята</span>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer.html}"></div>
+
+<script th:src="@{/js/menu.js}" src="menu.js"></script>
+<script th:src="@{/js/all-requests.js}" src="all-requests.js"></script>
+</body>
+</html>

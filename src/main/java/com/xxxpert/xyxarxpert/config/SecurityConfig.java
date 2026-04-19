@@ -1,5 +1,6 @@
 package com.xxxpert.xyxarxpert.config;
 
+import com.xxxpert.xyxarxpert.CustomSuccessHandler;
 import com.xxxpert.xyxarxpert.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,18 +20,18 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomSuccessHandler customSuccessHandler) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/auth/login", "/auth/register",  "/auth/verify**", "/main", "/css/**", "/js/**").permitAll()
-//                        .requestMatchers("/products/create").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers("/profile/all-requests").hasAnyRole("OWNER", "MASTER")
                         .anyRequest().authenticated()
                 ).userDetailsService(userDetailsService)
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/main")
+                        .successHandler(customSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -39,9 +39,9 @@
                     <div class="profile-name">
                         <h1 th:text="${user.firstName + ' ' + user.lastName}">Иван Иванов</h1>
                         <!-- Бейдж роли если не user -->
-                        <div class="role-badge" th:if="${user.role != 'user'}" th:classappend="${'role-' + user.role.toLowerCase()}">
+                        <div class="role-badge" th:if="${user.role != 'USER'}" th:classappend="${'role-' + user.role.toLowerCase()}">
                             <span class="role-icon">⭐</span>
-                            <span th:text="${user.role == 'master' ? 'Мастер' : (user.role == 'admin' ? 'Администратор' : 'Владелец')}"></span>
+                            <span th:text="${user.role == 'MASTER' ? 'Мастер' : (user.role == 'ADMIN' ? 'Администратор' : 'Владелец')}"></span>
                         </div>
                     </div>
                     <p class="profile-email" th:text="${user.email}">user@example.com</p>
@@ -94,7 +94,7 @@
         </div>
 
         <!-- Секция заявок на ремонт (только для обычных пользователей и если есть заявки) -->
-        <div class="repairs-section" th:if="${user.role == 'user' or user.role == 'ROLE_USER'}">
+        <div class="repairs-section" th:if="${user.role == 'USER'}">
             <div class="section-header">
                 <h2>Мои заявки на ремонт</h2>
                 <div class="header-line"></div>
@@ -179,19 +179,23 @@
         </div>
 
         <!-- Информация для мастеров -->
-        <div class="master-section" th:if="${user.role == 'master' or user.role == 'ROLE_MASTER'}">
+        <div class="master-section" th:if="${user.role == 'MASTER'}">
             <div class="section-header">
                 <h2>Информация мастера</h2>
                 <div class="header-line"></div>
             </div>
             <div class="info-box">
                 <p>Вы авторизованы как мастер сервисного центра. Ваше назначение — выполнять диагностику и ремонт телефонов.</p>
-                <p>Перейдите в <a href="/admin/dashboard">панель управления</a> для просмотра новых заявок и управления статусами.</p>
+                <p>Перейдите в панель управления для просмотра новых заявок и управления статусами.</p>
             </div>
+            <a href="/profile/all-requests" class="admin-link">
+                <span class="link-icon">📊</span>
+                <span class="link-text">Панель управления заявками</span>
+            </a>
         </div>
 
         <!-- Информация для администраторов -->
-        <div class="admin-section" th:if="${user.role == 'admin' or user.role == 'ROLE_ADMIN'}">
+        <div class="admin-section" th:if="${user.role == 'ADMIN'}">
             <div class="section-header">
                 <h2>Панель администратора</h2>
                 <div class="header-line"></div>
@@ -217,7 +221,7 @@
         </div>
 
         <!-- Информация для владельца -->
-        <div class="owner-section" th:if="${user.role == 'owner' or user.role == 'ROLE_OWNER'}">
+        <div class="owner-section" th:if="${user.role == 'OWNER'}">
             <div class="section-header">
                 <h2>Панель владельца</h2>
                 <div class="header-line"></div>
@@ -247,6 +251,7 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer.html}"></div>
 
+<script th:src="@{/js/menu.js}" src="menu.js"></script>
 <script th:src="@{/js/profile.js}" src="profile.js"></script>
 </body>
 </html>

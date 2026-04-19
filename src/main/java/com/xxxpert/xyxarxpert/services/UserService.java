@@ -46,7 +46,7 @@ public class UserService {
         user.setMiddleName(request.getMiddleName());
         user.setLastName(request.getLastName());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setRole("user");
+        user.setRole("USER");
         user.setRegisteredAt(OffsetDateTime.now());
         user.setEnabled(false);
 

@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface RepairRequestRepository extends JpaRepository<RepairRequest, Long> {
     List<RepairRequest> findAllByUser(User user);
+    List<RepairRequest> findAllByStatusOrderByCreatedAtAsc(String status);
 }

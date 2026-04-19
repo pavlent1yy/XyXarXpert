@@ -21,7 +21,7 @@ public class RepairRequestController {
     @PostMapping("/repair-request")
     public String newRepairRequest(@ModelAttribute CreateRepairRequestDto dto, Model model){
         requestService.addRepairRequest(dto);
-        return "redirect:/main"; // потом будем редиректить на текущие заявки в профиле пользователя
+        return "redirect:/profile";
     }
 
 

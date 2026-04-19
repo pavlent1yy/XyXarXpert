@@ -6,9 +6,11 @@ import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -91,6 +93,29 @@ public class RepairRequestService {
     public List<RepairRequest> getMyRequests(){
         User user = util.getCurrentUser();
         return repairRequestRepository.findAllByUser(user);
+    }
+
+    public List<RepairRequest> getAllCreatedRequests(){
+        List<RepairRequest> requests =
+                repairRequestRepository.findAllByStatusOrderByCreatedAtAsc("CREATED");
+        requests.sort(Comparator.comparingInt(this::getPriorityGroup).thenComparing(RepairRequest::getCreatedAt));
+        return requests;
+    }
+
+    public long countUrgent(List<RepairRequest> requests) {
+        return requests.stream()
+                .filter(r -> "HIGH".equals(r.getPriority()))
+                .count();
+    }
+
+    private int getPriorityGroup(RepairRequest r) {
+        if ("CREATED".equals(r.getStatus()) && "HIGH".equals(r.getPriority())) {
+            return 0;
+        }
+        if ("CREATED".equals(r.getStatus())) {
+            return 1;
+        }
+        return 2;
     }
 
 }

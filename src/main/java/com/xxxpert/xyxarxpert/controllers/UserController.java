@@ -6,6 +6,7 @@ import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import com.xxxpert.xyxarxpert.services.SecurityUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.Banner;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,4 +35,15 @@ public class UserController {
 
         return "profile";
     }
+
+    @GetMapping("/profile/all-requests")
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER','ROLE_MASTER')")
+    public String allRequests(Model model){
+        List<RepairRequest> repairRequests = requestService.getAllCreatedRequests();
+        model.addAttribute("request", new RepairRequest());
+        model.addAttribute("repairRequests", repairRequests);
+        model.addAttribute("urgentCount", requestService.countUrgent(repairRequests));
+        return "all-requests";
+    }
+
 }

@@ -32,7 +32,7 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @ColumnDefault("'user'")
+    @ColumnDefault("'USER'")
     @Column(name = "role", nullable = false, length = 50)
     private String role;
 
