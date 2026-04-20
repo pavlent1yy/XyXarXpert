@@ -13,4 +13,5 @@ public interface RepairRequestRepository extends JpaRepository<RepairRequest, Lo
     List<RepairRequest> findAllByUser(User user);
     List<RepairRequest> findAllByStatusOrderByCreatedAtAsc(String status);
     Optional<RepairRequest> findById(Long id);
+    List<RepairRequest> findAllByMaster(User master);
 }

@@ -46,4 +46,13 @@ public class UserController {
         return "all-requests";
     }
 
+    @GetMapping("/profile/my-requests")
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER','ROLE_MASTER')")
+    public String myRequests(Model model){
+        User master = util.getCurrentUser();
+        List<RepairRequest> myRequests = repairRequestRepository.findAllByMaster(master);
+        model.addAttribute("myRequests", myRequests);
+        return "my-requests";
+    }
+
 }

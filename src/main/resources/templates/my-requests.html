@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заявки - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/my-requests.css}" href="my-requests.css">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header.html}"></div>
+
+<!-- Основной контент -->
+<section class="my-requests-section">
+    <div class="container">
+        <div class="requests-breadcrumb">
+            <a href="/">Главная</a>
+            <span class="separator">→</span>
+            <a href="/profile">Профиль</a>
+            <span class="separator">→</span>
+            <span>Мои заявки</span>
+        </div>
+
+        <!-- Заголовок -->
+        <div class="requests-header">
+            <div class="header-title">
+                <h1>Мои заявки на ремонт</h1>
+                <p>Заявки, которые вы приняли в работу</p>
+            </div>
+
+            <div class="requests-stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="totalCount" th:text="${myRequests.size()}">0</span>
+                    <span class="stat-label">Всего заявок</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="takenCount">0</span>
+                    <span class="stat-label">Взято</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="inProgressCount">0</span>
+                    <span class="stat-label">В работе</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="completedCount">0</span>
+                    <span class="stat-label">Завершено</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Фильтры статуса -->
+        <div class="requests-filters">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="TAKEN">Взято</button>
+            <button class="filter-btn" data-filter="IN_PROGRESS">В работе</button>
+            <button class="filter-btn" data-filter="COMPLETED">Завершено</button>
+        </div>
+
+        <!-- Сообщение об отсутствии заявок -->
+        <div class="empty-state" th:if="${myRequests.size() == 0}">
+            <div class="empty-icon">📋</div>
+            <h3>Нет принятых заявок</h3>
+            <p>Вы ещё не приняли ни одну заявку</p>
+            <a href="/all-requests" class="btn btn-primary">Посмотреть новые заявки</a>
+        </div>
+
+        <!-- Список заявок -->
+        <div class="requests-list" th:if="${myRequests.size() > 0}">
+            <div class="request-item" th:each="request : ${myRequests}" th:data-id="${request.id}" th:data-status="${request.status}">
+                <!-- Заголовок заявки -->
+                <div class="item-header">
+                    <div class="item-title-block">
+                        <h3 th:text="${request.title}">Разбит экран</h3>
+                        <p class="item-phone" th:text="${request.phoneModel}">iPhone 14 Pro</p>
+                    </div>
+                    <div class="item-meta-quick">
+                            <span class="status-badge" th:classappend="${'status-' + request.status.toLowerCase()}"
+                                  th:text="${request.status == 'TAKEN' ? 'Взято' : (request.status == 'IN_PROGRESS' ? 'В работе' : 'Завершено')}"></span>
+                        <span class="priority-badge" th:classappend="${'priority-' + request.priority.toLowerCase()}"
+                              th:text="${request.priority == 'HIGH' ? 'Срочно' : (request.priority == 'MEDIUM' ? 'Стандарт' : 'Обычно')}"></span>
+                    </div>
+                </div>
+
+                <!-- Информация заявки -->
+                <div class="item-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">🔧 Проблема</span>
+                            <span class="info-value" th:text="${request.issueType}">SCREEN</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">👤 Клиент</span>
+                            <span class="info-value" th:text="${request.user.firstName + ' ' + request.user.lastName}">Иван Иванов</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📞 Контакт</span>
+                            <span class="info-value" th:text="${request.contactValue}">+7 (999) 123-45-67</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📅 Создана</span>
+                            <span class="info-value" th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">10.01.2024 14:30</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Описание -->
+                <div class="item-description">
+                    <p th:text="${request.description}">Описание проблемы</p>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="item-actions">
+                    <button class="btn-action btn-details" th:data-id="${request.id}">
+                        <span>👁️</span>
+                        Подробнее
+                    </button>
+                    <button class="btn-action btn-start-repair" th:if="${request.status == 'TAKEN'}" th:data-id="${request.id}">
+                        <span>▶️</span>
+                        Начать ремонт
+                    </button>
+                    <button class="btn-action btn-complete" th:if="${request.status == 'IN_PROGRESS'}" th:data-id="${request.id}">
+                        <span>✓</span>
+                        Завершить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== MODAL: START REPAIR ===== -->
+<div class="modal modal-start-repair" id="startRepairModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Начать ремонт</h2>
+            <button class="modal-close" id="closeStartRepairModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Вставьте ссылку на прямую трансляцию YouTube ремонта. Клиент сможет отслеживать процесс.</p>
+
+            <div class="form-group">
+                <label for="youtubeLink">Ссылка на YouTube прямую трансляцию</label>
+                <div class="input-wrapper">
+                    <input
+                            type="url"
+                            id="youtubeLink"
+                            class="form-input"
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            maxlength="500"
+                    >
+                    <span class="input-icon">📹</span>
+                </div>
+                <div class="input-helper">Скопируй и вставь полную ссылку на трансляцию</div>
+            </div>
+
+            <div class="link-preview" id="linkPreview" style="display: none;">
+                <span class="preview-icon">✓</span>
+                <span class="preview-text">Ссылка валидна</span>
+            </div>
+
+            <div class="link-error" id="linkError" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <span class="error-text">Пожалуйста, вставьте корректную ссылку YouTube</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelStartRepairBtn">Отмена</button>
+            <button class="btn-confirm btn-start-confirm" id="confirmStartRepairBtn" disabled>Начать ремонт</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: COMPLETE REPAIR ===== -->
+<div class="modal modal-complete" id="completeModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Завершить ремонт</h2>
+            <button class="modal-close" id="closeCompleteModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Вы уверены, что хотите завершить ремонт этого телефона? После завершения клиент получит уведомление.</p>
+            <div class="request-preview" id="completeRequestPreview"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelCompleteBtn">Отмена</button>
+            <button class="btn-confirm" id="confirmCompleteBtn">Да, завершить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: DETAILS ===== -->
+<div class="modal modal-details" id="detailsModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Название заявки</h2>
+            <button class="modal-close" id="closeDetailsModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <span class="detail-label">Полное описание:</span>
+                <p id="modalDescription" class="detail-text">Описание проблемы</p>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Модель телефона:</span>
+                <span id="modalPhone" class="detail-value">iPhone 14 Pro</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Тип проблемы:</span>
+                <span id="modalIssue" class="detail-value">SCREEN</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Приоритет:</span>
+                <span id="modalPriority" class="detail-value">MEDIUM</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Клиент:</span>
+                <span id="modalClient" class="detail-value">Иван Иванов</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Контакт:</span>
+                <span id="modalContact" class="detail-value">+7 (999) 123-45-67</span>
+            </div>
+            <div class="detail-row" id="liveStreamRow" style="display: none;">
+                <span class="detail-label">Прямая трансляция:</span>
+                <a id="modalLiveStream" class="detail-value detail-link" target="_blank">Смотреть</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SUCCESS TOAST ===== -->
+<div class="success-toast" id="successToast" style="display: none;">
+    <span class="toast-icon">✓</span>
+    <span class="toast-text" id="toastText">Заявка принята</span>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer.html}"></div>
+
+<script th:src="@{/js/menu.js}" src="menu.js"></script>
+<script th:src="@{/js/my-requests.js}" src="my-requests.js"></script>
+</body>
+</html>
