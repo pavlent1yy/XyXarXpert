@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- Карточка профиля -->
+<div class="profile-card">
+    <div class="profile-header">
+        <!-- Аватар -->
+        <div class="profile-avatar">
+            <div class="avatar-placeholder">
+<!--                <span th:text="${#strings.charAt(user.firstName, 0)}">A</span>-->
+            </div>
+            <div class="avatar-overlay">
+                <button class="avatar-upload">📷</button>
+            </div>
+        </div>
+
+        <!-- Информация пользователя -->
+        <div class="profile-info">
+            <div class="profile-name">
+                <h1 th:text="${user.firstName + ' ' + user.lastName}">Иван Иванов</h1>
+                <!-- Бейдж роли если не user -->
+                <div class="role-badge" th:if="${user.role != 'USER'}" th:classappend="${'role-' + user.role.toLowerCase()}">
+                    <span class="role-icon">⭐</span>
+                    <span th:text="${user.role == 'MASTER' ? 'Мастер' : (user.role == 'ADMIN' ? 'Администратор' : 'Владелец')}"></span>
+                </div>
+            </div>
+            <p class="profile-email" th:text="${user.email}">user@example.com</p>
+            <p class="profile-member">
+                <span class="member-icon">📅</span>
+                <span>Участник с </span>
+                <span th:text="${#temporals.format(user.registeredAt, 'dd MMMM yyyy')}"></span>
+            </p>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="profile-actions">
+            <a href="#" class="btn-action btn-edit">
+                <span>✏️</span>
+                Редактировать
+            </a>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-action btn-logout">
+                    <span>🚪</span>
+                    Выход
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Дополнительная информация -->
+    <div class="profile-details">
+        <div class="detail-row">
+            <div class="detail-label">Полное имя</div>
+            <div class="detail-value">
+                <span th:text="${user.firstName + ' ' + (user.middleName != null ? user.middleName + ' ' : '') + user.lastName}">Иван Иванович Иванов</span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Email</div>
+            <div class="detail-value">
+                <span th:text="${user.email}">user@example.com</span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Статус</div>
+            <div class="detail-value">
+                    <span class="status-badge" th:classappend="${user.enabled ? 'status-active' : 'status-inactive'}">
+                        <span class="status-dot"></span>
+                        <span th:text="${user.enabled ? 'Активен' : 'Неактивен'}"></span>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

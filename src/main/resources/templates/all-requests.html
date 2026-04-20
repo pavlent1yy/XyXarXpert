@@ -107,8 +107,8 @@
                 <div class="card-description">
                     <p class="description-text"
                        th:text="${#strings.length(request.description) > 150
-                             ? #strings.substring(request.description, 0, 150)
-                             : request.description}">
+                                 ? #strings.substring(request.description, 0, 150)
+                                 : request.description}">
                     </p>
                     <button class="btn-expand" th:data-id="${request.id}">Читать полностью</button>
                 </div>

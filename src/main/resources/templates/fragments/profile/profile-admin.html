@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- ===== SECTION: ADMIN ===== -->
+<!-- Информация для администраторов -->
+<div class="admin-section" th:if="${user.role == 'ADMIN'}">
+    <div class="section-header">
+        <h2>Панель администратора</h2>
+        <div class="header-line"></div>
+    </div>
+
+    <div class="admin-links">
+        <a href="/admin/dashboard" class="admin-link">
+            <span class="link-icon">📊</span>
+            <span class="link-text">Панель управления</span>
+        </a>
+        <a href="/admin/users" class="admin-link">
+            <span class="link-icon">👥</span>
+            <span class="link-text">Управление пользователями</span>
+        </a>
+        <a href="/admin/requests" class="admin-link">
+            <span class="link-icon">📋</span>
+            <span class="link-text">Все заявки</span>
+        </a>
+        <a href="/admin/settings" class="admin-link">
+            <span class="link-icon">⚙️</span>
+            <span class="link-text">Настройки сайта</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>

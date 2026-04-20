@@ -81,7 +81,7 @@ public class RepairRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "master_id", referencedColumnName = "id")
     private User master;
-    
+
     @Size(max = 512)
     @Column(name = "stream_link", length = 512)
     private String streamLink;

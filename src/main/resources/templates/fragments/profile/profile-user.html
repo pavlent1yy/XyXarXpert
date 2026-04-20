@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- ===== SECTION: USER ===== -->
+<!-- Секция заявок на ремонт (только для обычных пользователей) -->
+<div class="repairs-section" th:if="${user.role == 'USER'}">
+    <div class="section-header">
+        <h2>Мои заявки на ремонт</h2>
+        <div class="header-line"></div>
+    </div>
+
+    <!-- Если есть заявки -->
+    <div th:if="${repairRequests != null and repairRequests.size() > 0}">
+        <!-- Фильтры статуса -->
+        <div class="repairs-filters">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="CREATED">Новая</button>
+            <button class="filter-btn" data-filter="IN_PROGRESS">В работе</button>
+            <button class="filter-btn" data-filter="COMPLETED">Готова</button>
+            <button class="filter-btn" data-filter="CANCELLED">Отменена</button>
+        </div>
+
+        <!-- Список заявок -->
+        <div class="repairs-list">
+            <div class="repair-item" th:each="request : ${repairRequests}" th:classappend="${'status-' + request.status.toLowerCase()}">
+                <div class="repair-header">
+                    <div class="repair-title-block">
+                        <h3 th:text="${request.title}">Разбит экран</h3>
+                        <p class="repair-model" th:text="${request.phoneModel}">iPhone 14 Pro</p>
+                    </div>
+                    <div class="repair-status">
+                        <span class="status-label" th:classappend="${'label-' + request.status.toLowerCase()}" th:text="${request.status == 'CREATED' ? 'Новая' : (request.status == 'IN_PROGRESS' ? 'В работе' : (request.status == 'COMPLETED' ? 'Готова' : 'Отменена'))}"></span>
+                    </div>
+                </div>
+
+                <div class="repair-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">🔧</span>
+                        <span class="meta-label">Проблема</span>
+                        <span class="meta-value" th:text="${request.issueType}">SCREEN</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon" th:classappend="${request.priority == 'HIGH' ? 'priority-high' : (request.priority == 'MEDIUM' ? 'priority-medium' : 'priority-low')}">⚡</span>
+                        <span class="meta-label">Срочность</span>
+                        <span class="meta-value" th:text="${request.priority == 'HIGH' ? 'Срочный' : (request.priority == 'MEDIUM' ? 'Стандартный' : 'Обычный')}"></span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        <span class="meta-label">Создана</span>
+                        <span class="meta-value" th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">10.01.2024 14:30</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📞</span>
+                        <span class="meta-label">Контакт</span>
+                        <span class="meta-value" th:text="${request.contactValue}">+7 (999) 123-45-67</span>
+                    </div>
+                </div>
+
+                <div class="repair-description">
+                    <p th:text="${request.description}">Описание проблемы</p>
+                </div>
+
+                <div class="repair-actions">
+                    <button class="btn-action-small btn-view" th:data-id="${request.id}">
+                        <span>👁️</span>
+                        Подробнее
+                    </button>
+                    <button class="btn-action-small btn-edit" th:if="${request.status == 'CREATED'}" th:data-id="${request.id}">
+                        <span>✏️</span>
+                        Редактировать
+                    </button>
+                    <button class="btn-action-small btn-cancel" th:if="${request.status != 'COMPLETED' and request.status != 'CANCELLED'}" th:data-id="${request.id}">
+                        <span>🗑️</span>
+                        Отменить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Если нет заявок -->
+    <div class="empty-state" th:unless="${repairRequests != null and repairRequests.size() > 0}">
+        <div class="empty-icon">📋</div>
+        <h3>Заявок на ремонт нет</h3>
+        <p>Вы ещё не создавали заявок на ремонт</p>
+        <a href="/" class="btn btn-primary">Создать заявку</a>
+    </div>
+</div>
+</body>
+</html>

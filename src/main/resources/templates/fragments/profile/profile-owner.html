@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- ===== SECTION: OWNER ===== -->
+<!-- Информация для владельца -->
+<div class="owner-section" th:if="${user.role == 'OWNER'}">
+    <div class="section-header">
+        <h2>Панель владельца</h2>
+        <div class="header-line"></div>
+    </div>
+
+    <div class="owner-links">
+        <a href="/owner/dashboard" class="admin-link">
+            <span class="link-icon">💼</span>
+            <span class="link-text">Аналитика и статистика</span>
+        </a>
+        <a href="/owner/finances" class="admin-link">
+            <span class="link-icon">💰</span>
+            <span class="link-text">Финансы</span>
+        </a>
+        <a href="/owner/team" class="admin-link">
+            <span class="link-icon">👥</span>
+            <span class="link-text">Управление командой</span>
+        </a>
+        <a href="/owner/settings" class="admin-link">
+            <span class="link-icon">⚙️</span>
+            <span class="link-text">Основные параметры</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>

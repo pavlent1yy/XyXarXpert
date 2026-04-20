@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- ===== SECTION: MASTER ===== -->
+<!-- Информация для мастеров -->
+<div class="master-section" th:if="${user.role == 'MASTER'}">
+    <div class="section-header">
+        <h2>Информация мастера</h2>
+        <div class="header-line"></div>
+    </div>
+
+    <div class="info-box">
+        <p>Вы авторизованы как мастер сервисного центра. Ваше назначение — выполнять диагностику и ремонт телефонов.</p>
+        <p>Перейдите в панель управления для просмотра новых заявок и управления статусами.</p>
+    </div>
+
+    <div class="admin-links">
+        <a href="profile/all-requests" class="admin-link">
+            <span class="link-icon">📊</span>
+            <span class="link-text">Панель управления заявками</span>
+        </a>
+        <a href="/profile/my-tasks" class="admin-link">
+            <span class="link-icon">📋</span>
+            <span class="link-text">Мои ремонты</span>
+        </a>
+        <a href="/profile/statistics" class="admin-link">
+            <span class="link-icon">📈</span>
+            <span class="link-text">Статистика</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>

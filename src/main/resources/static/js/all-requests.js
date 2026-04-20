@@ -74,16 +74,106 @@ function filterAndSort() {
     });
 }
 
-searchInput.addEventListener('input', filterAndSort);
-sortSelect.addEventListener('change', filterAndSort);
+if (searchInput) {
+    searchInput.addEventListener('input', filterAndSort);
+}
+
+if (sortSelect) {
+    sortSelect.addEventListener('change', filterAndSort);
+}
+
+// ===== МОДАЛ ПОДТВЕРЖДЕНИЯ ПРИНЯТИЯ =====
+const acceptModal = document.getElementById('acceptModal') || createAcceptModal();
+
+function createAcceptModal() {
+    const modal = document.createElement('div');
+    modal.id = 'acceptModal';
+    modal.className = 'modal modal-accept';
+    modal.style.display = 'none';
+    modal.innerHTML = `
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-compact">
+            <div class="modal-header">
+                <h2>Принять заявку?</h2>
+                <button class="modal-close" id="closeAcceptModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-text">Вы уверены, что хотите принять эту заявку? После принятия её увидят только вы.</p>
+                <div class="request-preview" id="acceptRequestPreview"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelAcceptBtn">Отмена</button>
+                <button class="btn-confirm btn-accept-confirm" id="confirmAcceptBtn">Да, принять</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+const closeAcceptModal = document.getElementById('closeAcceptModal');
+const cancelAcceptBtn = document.getElementById('cancelAcceptBtn');
+const confirmAcceptBtn = document.getElementById('confirmAcceptBtn');
 
 // ===== ПРИНЯТЬ ЗАЯВКУ =====
 document.querySelectorAll('.btn-accept').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const requestId = e.currentTarget.dataset.id;
+        const requestData = requests.find(r => r.id === requestId);
+
+        if (requestData) {
+            // Заполняем информацию в модал
+            const preview = document.getElementById('acceptRequestPreview');
+            preview.innerHTML = `
+                <div class="preview-item">
+                    <span class="preview-label">Заявка:</span>
+                    <span class="preview-value">${requestData.title}</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Телефон:</span>
+                    <span class="preview-value">${requestData.phoneModel}</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Клиент:</span>
+                    <span class="preview-value">${requestData.client}</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">Контакт:</span>
+                    <span class="preview-value">${requestData.contact}</span>
+                </div>
+            `;
+
+            // Сохраняем ID текущей заявки
+            currentRequestId = requestId;
+
+            // Показываем модал
+            acceptModal.style.display = 'flex';
+        }
+    });
+});
+
+// Закрытие модала подтверждения
+if (closeAcceptModal) {
+    closeAcceptModal.addEventListener('click', () => {
+        acceptModal.style.display = 'none';
+        currentRequestId = null;
+    });
+}
+
+if (cancelAcceptBtn) {
+    cancelAcceptBtn.addEventListener('click', () => {
+        acceptModal.style.display = 'none';
+        currentRequestId = null;
+    });
+}
+
+// Подтверждение принятия заявки
+if (confirmAcceptBtn) {
+    confirmAcceptBtn.addEventListener('click', () => {
+        if (!currentRequestId) return;
 
         // Отправляем запрос на сервер
-        fetch(`/api/repair-request/${requestId}/accept`, {
+        fetch(`/api/repair-request/${currentRequestId}/accept`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -92,22 +182,44 @@ document.querySelectorAll('.btn-accept').forEach(btn => {
         })
             .then(response => {
                 if (response.ok) {
+                    // Закрываем модал
+                    acceptModal.style.display = 'none';
+
                     // Удаляем карточку
-                    document.querySelector(`[data-id="${requestId}"]`).style.animation = 'slideOutUp 0.3s ease forwards';
-                    setTimeout(() => {
-                        document.querySelector(`[data-id="${requestId}"]`).remove();
-                    }, 300);
+                    const card = document.querySelector(`[data-id="${currentRequestId}"]`);
+                    if (card) {
+                        card.style.animation = 'slideOutUp 0.3s ease forwards';
+                        setTimeout(() => {
+                            card.remove();
+                            updateCounts();
+                        }, 300);
+                    }
 
-                    // Пока��ываем уведомление
-                    showToast('Заявка принята! Клиент получит уведомление.');
+                    // Показываем уведомление
+                    showToast('✓ Заявка принята! Клиент получит уведомление.');
 
-                    // Обновляем счетчик
-                    updateCounts();
+                    currentRequestId = null;
+                } else {
+                    showToast('✗ Ошибка при принятии заявки');
                 }
             })
-            .catch(err => console.error('Ошибка:', err));
+            .catch(err => {
+                console.error('Ошибка:', err);
+                showToast('✗ Ошибка при принятии заявки');
+            });
     });
-});
+}
+
+// Закрытие по клику на overlay
+const acceptOverlay = acceptModal.querySelector('.modal-overlay');
+if (acceptOverlay) {
+    acceptOverlay.addEventListener('click', (e) => {
+        if (e.target === acceptOverlay) {
+            acceptModal.style.display = 'none';
+            currentRequestId = null;
+        }
+    });
+}
 
 // ===== МОДАЛ ОТКЛОНЕНИЯ =====
 const rejectModal = document.getElementById('rejectModal');
@@ -126,61 +238,83 @@ document.querySelectorAll('.btn-reject').forEach(btn => {
     });
 });
 
-closeRejectModal.addEventListener('click', () => {
-    rejectModal.style.display = 'none';
-    currentRequestId = null;
-});
+if (closeRejectModal) {
+    closeRejectModal.addEventListener('click', () => {
+        rejectModal.style.display = 'none';
+        currentRequestId = null;
+    });
+}
 
-document.querySelector('.modal-overlay', rejectModal).addEventListener('click', () => {
-    rejectModal.style.display = 'none';
-});
+const rejectOverlay = rejectModal?.querySelector('.modal-overlay');
+if (rejectOverlay) {
+    rejectOverlay.addEventListener('click', (e) => {
+        if (e.target === rejectOverlay) {
+            rejectModal.style.display = 'none';
+            currentRequestId = null;
+        }
+    });
+}
 
-cancelRejectBtn.addEventListener('click', () => {
-    rejectModal.style.display = 'none';
-    currentRequestId = null;
-});
+if (cancelRejectBtn) {
+    cancelRejectBtn.addEventListener('click', () => {
+        rejectModal.style.display = 'none';
+        currentRequestId = null;
+    });
+}
 
-rejectReason.addEventListener('input', (e) => {
-    charCount.textContent = e.target.value.length;
-});
+if (rejectReason) {
+    rejectReason.addEventListener('input', (e) => {
+        charCount.textContent = e.target.value.length;
+    });
+}
 
-confirmRejectBtn.addEventListener('click', () => {
-    if (rejectReason.value.trim() === '') {
-        alert('Пожалуйста, укажите причину отклонения');
-        return;
-    }
+if (confirmRejectBtn) {
+    confirmRejectBtn.addEventListener('click', () => {
+        if (rejectReason.value.trim() === '') {
+            alert('Пожалуйста, укажите причину отклонения');
+            return;
+        }
 
-    // Отправляем запрос на сервер
-    fetch(`/api/repair-request/${currentRequestId}/reject`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content || ''
-        },
-        body: JSON.stringify({
-            reason: rejectReason.value
+        // Отправляем запрос на сервер
+        fetch(`/api/repair-request/${currentRequestId}/reject`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content || ''
+            },
+            body: JSON.stringify({
+                reason: rejectReason.value
+            })
         })
-    })
-        .then(response => {
-            if (response.ok) {
-                // Удаляем карточку
-                document.querySelector(`[data-id="${currentRequestId}"]`).style.animation = 'slideOutUp 0.3s ease forwards';
-                setTimeout(() => {
-                    document.querySelector(`[data-id="${currentRequestId}"]`).remove();
-                }, 300);
+            .then(response => {
+                if (response.ok) {
+                    // Закрываем модал
+                    rejectModal.style.display = 'none';
 
-                // Закрываем модал
-                rejectModal.style.display = 'none';
+                    // Удаляем карточку
+                    const card = document.querySelector(`[data-id="${currentRequestId}"]`);
+                    if (card) {
+                        card.style.animation = 'slideOutUp 0.3s ease forwards';
+                        setTimeout(() => {
+                            card.remove();
+                            updateCounts();
+                        }, 300);
+                    }
 
-                // Показываем уведомление
-                showToast('Заявка отклонена. Клиент получит ваше сообщение.');
+                    // Показываем уведомление
+                    showToast('✗ Заявка отклонена. Клиент получит ваше сообщение.');
 
-                // Обновляем счетчик
-                updateCounts();
-            }
-        })
-        .catch(err => console.error('Ошибка:', err));
-});
+                    currentRequestId = null;
+                } else {
+                    showToast('✗ Ошибка при отклонении заявки');
+                }
+            })
+            .catch(err => {
+                console.error('Ошибка:', err);
+                showToast('✗ Ошибка при отклонении заявки');
+            });
+    });
+}
 
 // ===== МОДАЛ ДЕТАЛЕЙ =====
 const detailsModal = document.getElementById('detailsModal');
@@ -205,15 +339,20 @@ document.querySelectorAll('.btn-expand').forEach(btn => {
     });
 });
 
-closeDetailsModal.addEventListener('click', () => {
-    detailsModal.style.display = 'none';
-});
+if (closeDetailsModal) {
+    closeDetailsModal.addEventListener('click', () => {
+        detailsModal.style.display = 'none';
+    });
+}
 
 // Закрытие модалов по клику на overlay
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
-            overlay.closest('.modal').style.display = 'none';
+            const modal = overlay.closest('.modal');
+            if (modal && !modal.id.includes('accept')) {
+                modal.style.display = 'none';
+            }
         }
     });
 });
@@ -238,12 +377,19 @@ function updateCounts() {
     const totalCount = document.querySelectorAll('.request-card').length;
     const urgentCount = document.querySelectorAll('.request-card[data-priority="HIGH"]').length;
 
-    document.getElementById('totalCount').textContent = totalCount;
-    document.getElementById('urgentCount').textContent = urgentCount;
+    const totalEl = document.getElementById('totalCount');
+    const urgentEl = document.getElementById('urgentCount');
+
+    if (totalEl) totalEl.textContent = totalCount;
+    if (urgentEl) urgentEl.textContent = urgentCount;
 
     // Если нет заявок, показываем пустое состояние
     if (totalCount === 0) {
-        document.querySelector('.requests-grid').style.display = 'none';
+        const grid = document.querySelector('.requests-grid');
+        if (grid) {
+            grid.style.display = 'none';
+        }
+
         let emptyState = document.querySelector('.empty-state');
         if (!emptyState) {
             emptyState = document.createElement('div');
@@ -253,7 +399,10 @@ function updateCounts() {
                 <h3>Нет новых заявок</h3>
                 <p>Все заявки уже распределены между мастерами</p>
             `;
-            document.querySelector('.container').appendChild(emptyState);
+            const container = document.querySelector('.requests-section .container');
+            if (container) {
+                container.appendChild(emptyState);
+            }
         }
     }
 }
@@ -282,56 +431,35 @@ style.textContent = `
             transform: translateX(100px);
         }
     }
+
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: var(--border-width) solid var(--border-color);
+    }
+
+    .preview-item:last-child {
+        border-bottom: none;
+    }
+
+    .preview-label {
+        font-weight: var(--font-weight-bold);
+        color: var(--text-secondary);
+        font-size: var(--font-sm);
+    }
+
+    .preview-value {
+        color: var(--text-primary);
+        text-align: right;
+    }
+
+    .btn-accept-confirm {
+        background: var(--color-blue) !important;
+    }
+
+    .btn-accept-confirm:hover {
+        box-shadow: 0 6px 15px rgba(13, 39, 196, 0.3) !important;
+    }
 `;
 document.head.appendChild(style);
-
-
-// Обработка мобильного меню
-const hamburger = document.querySelector('.hamburger');
-const mobileMenu = document.querySelector('.mobile-menu');
-const menuOverlay = document.querySelector('.menu-overlay');
-const menuLinks = document.querySelectorAll('.menu-link, .menu-service');
-const menuClose = document.querySelector('.menu-close');
-const navMenu = document.querySelector('.nav-menu');
-
-if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        mobileMenu.classList.add('active');
-        menuOverlay.classList.add('active');
-        hamburger.classList.add('active');
-        navMenu.classList.add('hidden');
-        document.body.style.overflow = 'hidden';
-    });
-}
-
-function closeMenu() {
-    mobileMenu.classList.remove('active');
-    menuOverlay.classList.remove('active');
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-if (menuClose) {
-    menuClose.addEventListener('click', closeMenu);
-}
-
-if (menuOverlay) {
-    menuOverlay.addEventListener('click', closeMenu);
-}
-
-menuLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        setTimeout(closeMenu, 300);
-    });
-});
-
-// Прозрачность навбара при скролле
-const navbar = document.querySelector('.navbar');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
