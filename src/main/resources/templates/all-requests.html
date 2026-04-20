@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Новые заявки - XXX XyXarXpert</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
@@ -129,7 +131,53 @@
     </div>
 </section>
 
-<!-- Модал для подробного просмотра -->
+<!-- ===== MODAL: ACCEPT CONFIRMATION ===== -->
+<div class="modal modal-accept" id="acceptModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Принять заявку?</h2>
+            <button class="modal-close" id="closeAcceptModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Вы уверены, что хотите принять эту заявку? После принятия её увидят только вы.</p>
+            <div class="request-preview" id="acceptRequestPreview"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelAcceptBtn">Отмена</button>
+            <button class="btn-confirm btn-accept-confirm" id="confirmAcceptBtn">Да, принять</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: REJECT CONFIRMATION ===== -->
+<div class="modal modal-reject" id="rejectModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Отклонить заявку</h2>
+            <button class="modal-close" id="closeRejectModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Укажите причину отклонения заявки. Клиент получит это сообщение.</p>
+            <textarea
+                    id="rejectReason"
+                    class="reject-textarea"
+                    placeholder="Например: На данный момент заняты другими ремонтами, приносим свои извинения..."
+                    maxlength="500"
+            ></textarea>
+            <div class="char-counter">
+                <span id="charCount">0</span>/500
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelRejectBtn">Отмена</button>
+            <button class="btn-confirm" id="confirmRejectBtn">Отклонить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: DETAILS ===== -->
 <div class="modal modal-details" id="detailsModal" style="display: none;">
     <div class="modal-overlay"></div>
     <div class="modal-content">
@@ -166,34 +214,7 @@
     </div>
 </div>
 
-<!-- Модал для отклонения заявки -->
-<div class="modal modal-reject" id="rejectModal" style="display: none;">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-compact">
-        <div class="modal-header">
-            <h2>Отклонить заявку</h2>
-            <button class="modal-close" id="closeRejectModal">✕</button>
-        </div>
-        <div class="modal-body">
-            <p class="modal-text">Укажите причину отклонения заявки. Клиент получит это сообщение.</p>
-            <textarea
-                    id="rejectReason"
-                    class="reject-textarea"
-                    placeholder="Например: На данный момент заняты другими ремонтами, приносим свои извинения..."
-                    maxlength="500"
-            ></textarea>
-            <div class="char-counter">
-                <span id="charCount">0</span>/500
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-cancel" id="cancelRejectBtn">Отмена</button>
-            <button class="btn-confirm" id="confirmRejectBtn">Отклонить</button>
-        </div>
-    </div>
-</div>
-
-<!-- Успешное сообщение -->
+<!-- ===== SUCCESS TOAST ===== -->
 <div class="success-toast" id="successToast" style="display: none;">
     <span class="toast-icon">✓</span>
     <span class="toast-text" id="toastText">Заявка принята</span>

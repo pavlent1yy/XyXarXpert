@@ -3,6 +3,7 @@ package com.xxxpert.xyxarxpert.services;
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
 import com.xxxpert.xyxarxpert.entities.EmailVerificationCode;
 import com.xxxpert.xyxarxpert.entities.RegisterRequest;
+import com.xxxpert.xyxarxpert.entities.RepairRequest;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.LoginContext;
 import java.time.OffsetDateTime;
 
 @Slf4j

@@ -83,39 +83,11 @@ if (sortSelect) {
 }
 
 // ===== МОДАЛ ПОДТВЕРЖДЕНИЯ ПРИНЯТИЯ =====
-const acceptModal = document.getElementById('acceptModal') || createAcceptModal();
-
-function createAcceptModal() {
-    const modal = document.createElement('div');
-    modal.id = 'acceptModal';
-    modal.className = 'modal modal-accept';
-    modal.style.display = 'none';
-    modal.innerHTML = `
-        <div class="modal-overlay"></div>
-        <div class="modal-content modal-compact">
-            <div class="modal-header">
-                <h2>Принять заявку?</h2>
-                <button class="modal-close" id="closeAcceptModal">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-text">Вы уверены, что хотите принять эту заявку? После принятия её увидят только вы.</p>
-                <div class="request-preview" id="acceptRequestPreview"></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" id="cancelAcceptBtn">Отмена</button>
-                <button class="btn-confirm btn-accept-confirm" id="confirmAcceptBtn">Да, принять</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    return modal;
-}
-
+const acceptModal = document.getElementById('acceptModal');
 const closeAcceptModal = document.getElementById('closeAcceptModal');
 const cancelAcceptBtn = document.getElementById('cancelAcceptBtn');
 const confirmAcceptBtn = document.getElementById('confirmAcceptBtn');
 
-// ===== ПРИНЯТЬ ЗАЯВКУ =====
 document.querySelectorAll('.btn-accept').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const requestId = e.currentTarget.dataset.id;
@@ -167,17 +139,30 @@ if (cancelAcceptBtn) {
     });
 }
 
+// Закрытие по клику на overlay
+const acceptOverlay = acceptModal.querySelector('.modal-overlay');
+if (acceptOverlay) {
+    acceptOverlay.addEventListener('click', (e) => {
+        if (e.target === acceptOverlay) {
+            acceptModal.style.display = 'none';
+            currentRequestId = null;
+        }
+    });
+}
+
 // Подтверждение принятия заявки
 if (confirmAcceptBtn) {
     confirmAcceptBtn.addEventListener('click', () => {
         if (!currentRequestId) return;
 
         // Отправляем запрос на сервер
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
         fetch(`/api/repair-request/${currentRequestId}/accept`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content || ''
+                [csrfHeader]: csrfToken
             }
         })
             .then(response => {
@@ -207,17 +192,6 @@ if (confirmAcceptBtn) {
                 console.error('Ошибка:', err);
                 showToast('✗ Ошибка при принятии заявки');
             });
-    });
-}
-
-// Закрытие по клику на overlay
-const acceptOverlay = acceptModal.querySelector('.modal-overlay');
-if (acceptOverlay) {
-    acceptOverlay.addEventListener('click', (e) => {
-        if (e.target === acceptOverlay) {
-            acceptModal.style.display = 'none';
-            currentRequestId = null;
-        }
     });
 }
 
@@ -350,7 +324,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             const modal = overlay.closest('.modal');
-            if (modal && !modal.id.includes('accept')) {
+            if (modal) {
                 modal.style.display = 'none';
             }
         }

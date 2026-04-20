@@ -4,9 +4,9 @@ import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
+import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -19,6 +19,7 @@ import java.util.List;
 public class RepairRequestService {
 
     private final RepairRequestRepository repairRequestRepository;
+    private final UserRepository userRepository;
     private final SecurityUtil util;
 
     public void addRepairRequest(CreateRepairRequestDto dto) {
@@ -116,6 +117,17 @@ public class RepairRequestService {
             return 1;
         }
         return 2;
+    }
+
+    public void acceptRequest(Long id, String email){
+        RepairRequest request = repairRequestRepository.findById(id).orElseThrow();
+
+        User master = userRepository.findByEmail(email).orElseThrow();
+
+        request.setMaster(master);
+        request.setStatus("TAKEN");
+
+        repairRequestRepository.save(request);
     }
 
 }

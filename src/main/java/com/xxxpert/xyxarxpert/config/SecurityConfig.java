@@ -5,6 +5,7 @@ import com.xxxpert.xyxarxpert.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,7 +22,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomSuccessHandler customSuccessHandler) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/auth/login", "/auth/register",  "/auth/verify**", "/main", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile/all-requests").hasAnyRole("OWNER", "MASTER")
