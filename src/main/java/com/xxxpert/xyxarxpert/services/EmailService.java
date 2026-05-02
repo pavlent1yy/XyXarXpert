@@ -7,11 +7,14 @@ import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+
 import java.time.OffsetDateTime;
+
 
 @Slf4j
 @Service
@@ -21,6 +24,11 @@ public class EmailService {
 
     private final VerificationRepository verificationRepository;
     private final UserRepository userRepository;
+    private final JavaMailSender mailSender;
+
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Transactional
     public boolean verifyCode(String email, String code) {
@@ -57,8 +65,18 @@ public class EmailService {
         return true;
     }
 
-    public void sendCode(String email, String code){
-        log.debug("Sending verification code: email={}", email);
-        log.debug("Verification code for {}: {}", email, code);
+    public void sendCode(String email, String code) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom(fromEmail);
+        message.setTo(email);
+        message.setSubject("Подтверждение регистрации");
+        message.setText("""
+                Ваш код подтверждения: %s
+                
+                Если это были не вы — просто проигнорируйте письмо.
+                """.formatted(code));
+
+        mailSender.send(message);
     }
 }
