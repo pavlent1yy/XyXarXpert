@@ -1,10 +1,8 @@
 package com.xxxpert.xyxarxpert.services;
 
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
-import com.xxxpert.xyxarxpert.entities.EmailVerificationCode;
-import com.xxxpert.xyxarxpert.entities.RegisterRequest;
-import com.xxxpert.xyxarxpert.entities.RepairRequest;
-import com.xxxpert.xyxarxpert.entities.User;
+import com.xxxpert.xyxarxpert.entities.*;
+import com.xxxpert.xyxarxpert.repositories.PasswordResetTokenRepository;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.LoginContext;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final VerificationRepository verificationRepository;
+    private final PasswordResetTokenRepository resetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
@@ -31,6 +36,10 @@ public class UserService {
 
     public String generateCode() {
         return String.valueOf((int)(Math.random() * 900000) + 100000);
+    }
+
+    public Optional<User> getUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
     public void registerUser(RegisterRequest request){
@@ -75,4 +84,63 @@ public class UserService {
 
         log.info("User registered: email={}, enabled={}", user.getEmail(), user.getEnabled());
     }
+
+    public PasswordResetToken generatePasswordResetToken(User user){
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+
+        resetToken.setToken(UUID.randomUUID().toString());
+        resetToken.setUser(user);
+        resetToken.setUsed(false);
+        resetToken.setCreatedAt(Instant.now());
+        resetToken.setExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
+
+        resetTokenRepository.save(resetToken);
+
+        return resetToken;
+    }
+
+    public void sendPasswordResetEmail(User user){
+        PasswordResetToken token = generatePasswordResetToken(user);
+        emailService.sendResetToken(user.getEmail(), token.getToken());
+    }
+
+    public void resetPassword(String token, String newPassword){
+        PasswordResetToken resetToken = resetTokenRepository.findByToken(token).orElseThrow();
+
+        if (resetToken.getUsed()){
+            throw new RuntimeException("Token already used");
+        }
+
+        if (resetToken.getExpiresAt().isBefore(Instant.now())) {
+            throw new RuntimeException("Token expired");
+        }
+
+        User user = resetToken.getUser();
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setUsed(true);
+        resetToken.setUsedAt(Instant.now());
+        resetTokenRepository.save(resetToken);
+    }
+
+    @Transactional
+    public void changePassword(User currentUser, String currentPassword, String newPassword) {
+
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow();
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+    }
+
+
+
 }

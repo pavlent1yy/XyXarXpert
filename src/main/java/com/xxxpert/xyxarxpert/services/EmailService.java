@@ -1,6 +1,8 @@
 package com.xxxpert.xyxarxpert.services;
 
 import com.xxxpert.xyxarxpert.entities.EmailVerificationCode;
+import com.xxxpert.xyxarxpert.entities.ForgotPasswordRequest;
+import com.xxxpert.xyxarxpert.entities.PasswordResetToken;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
@@ -13,7 +15,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 
+import javax.swing.text.html.Option;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 
 @Slf4j
@@ -92,5 +96,25 @@ public class EmailService {
                 Вы успешно подтвердили вашу почту!
                 """);
         mailSender.send(congratulations);
+    }
+
+    public void sendResetToken(String email, String token){
+
+        SimpleMailMessage passwordReset = new SimpleMailMessage();
+
+        passwordReset.setFrom(fromEmail);
+        passwordReset.setTo(email);
+
+        passwordReset.setSubject("Сброс пароля!");
+
+        passwordReset.setText("""
+        Ваша персональная ссылка на сброс пароля:
+
+        http://localhost:1212/auth/reset-password?token=%s
+
+        Ссылка действует 15 минут.
+        """.formatted(token));
+
+        mailSender.send(passwordReset);
     }
 }

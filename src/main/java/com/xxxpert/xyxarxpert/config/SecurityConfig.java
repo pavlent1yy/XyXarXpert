@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomSuccessHandler customSuccessHandler) throws Exception {
         http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/auth/login", "/auth/register",  "/auth/verify**", "/main", "/css/**", "/js/**").permitAll()
+                          .requestMatchers( "/auth/**", "/auth/reset-password", "/main", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/profile/all-requests").hasAnyRole("OWNER", "MASTER")
                         .anyRequest().authenticated()
                 ).userDetailsService(userDetailsService)

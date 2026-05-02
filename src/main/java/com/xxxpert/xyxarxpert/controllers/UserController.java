@@ -5,13 +5,18 @@ import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import com.xxxpert.xyxarxpert.services.SecurityUtil;
+import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.Banner;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -21,6 +26,7 @@ public class UserController {
     private final SecurityUtil util;
     private final RepairRequestService requestService;
     private final RepairRequestRepository repairRequestRepository;
+    private final UserService userService;
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
@@ -53,6 +59,33 @@ public class UserController {
         List<RepairRequest> myRequests = repairRequestRepository.findAllByMaster(master);
         model.addAttribute("myRequests", myRequests);
         return "my-requests";
+    }
+
+    @GetMapping("/profile/change-password")
+    public String changePassword(){
+        return "change-password";
+    }
+
+    @PostMapping("/profile/change-password")
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 RedirectAttributes redirectAttributes) {
+
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Пароли не совпадают");
+            return "redirect:/profile";
+        }
+
+        try {
+            userService.changePassword(util.getCurrentUser(), currentPassword, newPassword);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Текущий пароль неверный");
+            return "redirect:/profile";
+        }
+
+        redirectAttributes.addFlashAttribute("success", "Пароль успешно изменён");
+        return "redirect:/profile";
     }
 
 }
