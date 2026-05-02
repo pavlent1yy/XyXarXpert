@@ -58,6 +58,7 @@ public class EmailService {
                 });
 
         user.setEnabled(true);
+        sendVerificationMail(email);
         userRepository.save(user);
 
         log.info("Email successfully verified: email={}", email);
@@ -78,5 +79,18 @@ public class EmailService {
                 """.formatted(code));
 
         mailSender.send(message);
+    }
+
+    public void sendVerificationMail(String email){
+        SimpleMailMessage congratulations = new SimpleMailMessage();
+
+        congratulations.setFrom(fromEmail);
+        congratulations.setTo(email);
+        congratulations.setSubject("Подздравляю!");
+        congratulations.setText("""
+                Подздравляем!
+                Вы успешно подтвердили вашу почту!
+                """);
+        mailSender.send(congratulations);
     }
 }
