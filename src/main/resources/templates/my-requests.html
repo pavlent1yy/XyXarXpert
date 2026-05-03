@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
     <link rel="stylesheet" th:href="@{/css/pages/my-requests.css}" href="my-requests.css">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
 </head>
 <body>
 <!-- Header -->
@@ -76,8 +78,8 @@
                         <p class="item-phone" th:text="${request.phoneModel}">iPhone 14 Pro</p>
                     </div>
                     <div class="item-meta-quick">
-                            <span class="status-badge" th:classappend="${'status-' + request.status.name().toLowerCase()}"
-                                  th:text="${request.status.name() == 'TAKEN' ? 'Взято' : (request.status.name() == 'IN_PROGRESS' ? 'В работе' : 'Завершено')}"></span>
+                        <span class="status-badge" th:classappend="${'status-' + request.status.name().toLowerCase()}"
+                              th:text="${request.status.name() == 'TAKEN' ? 'Взято' : (request.status.name() == 'IN_PROGRESS' ? 'В работе' : 'Завершено')}"></span>
                         <span class="priority-badge" th:classappend="${'priority-' + request.priority.toLowerCase()}"
                               th:text="${request.priority == 'HIGH' ? 'Срочно' : (request.priority == 'MEDIUM' ? 'Стандарт' : 'Обычно')}"></span>
                     </div>

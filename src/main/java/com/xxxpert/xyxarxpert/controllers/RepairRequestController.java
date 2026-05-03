@@ -36,5 +36,20 @@ public class RepairRequestController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/api/repair-request/{id}/start-repair")
+    @ResponseBody
+    public ResponseEntity<?> start(@PathVariable Long id, Authentication auth){
+        requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.IN_PROGRESS);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/api/repair-request/{id}/complete")
+    @ResponseBody
+    public ResponseEntity<?> complete(@PathVariable Long id, Authentication auth){
+        requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.DONE);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

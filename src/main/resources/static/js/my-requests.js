@@ -4,6 +4,10 @@ let currentRequestId = null;
 let currentRequestData = null;
 const requests = [];
 
+// Получаем CSRF токен
+const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
+
 // Получаем данные заявок из HTML
 document.querySelectorAll('.request-item').forEach(card => {
     const requestId = card.dataset.id;
@@ -126,12 +130,17 @@ if (confirmStartRepairBtn) {
     confirmStartRepairBtn.addEventListener('click', () => {
         if (!currentRequestId || !youtubeLink.value.trim()) return;
 
-        fetch(`/api/repair-request/${currentRequestId}/start`, {
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
+        fetch(`/api/repair-request/${currentRequestId}/start-repair`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content || ''
-            },
+            headers: headers,
             body: JSON.stringify({
                 liveStreamUrl: youtubeLink.value.trim()
             })
@@ -242,12 +251,17 @@ if (confirmCompleteBtn) {
     confirmCompleteBtn.addEventListener('click', () => {
         if (!currentRequestId) return;
 
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
         fetch(`/api/repair-request/${currentRequestId}/complete`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content || ''
-            }
+            headers: headers
         })
             .then(response => {
                 if (response.ok) {
@@ -255,7 +269,7 @@ if (confirmCompleteBtn) {
 
                     const item = document.querySelector(`[data-id="${currentRequestId}"]`);
                     if (item) {
-                        item.dataset.status = 'COMPLETED';
+                        item.dataset.status = 'DONE';
                         item.classList.remove('status-in_progress');
                         item.classList.add('status-completed');
 
