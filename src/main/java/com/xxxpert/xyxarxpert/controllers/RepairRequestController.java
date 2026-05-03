@@ -5,6 +5,7 @@ import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ public class RepairRequestController {
     private final RepairRequestService requestService;
 
     @PostMapping("/repair-request")
+    @PreAuthorize("hasRole('USER')")
     public String newRepairRequest(@ModelAttribute CreateRepairRequestDto dto, Model model){
         requestService.addRepairRequest(dto);
         return "redirect:/profile";

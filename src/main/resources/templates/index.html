@@ -18,7 +18,11 @@
             <div class="hero-label">// Мобильный сервис</div>
             <h1>Когда телефон в<br><span class="accent">беде</span></h1>
             <p>Быстрое и качественное обслуживание без лишних слов</p>
-            <button class="btn btn-primary" id="orderBtn" sec:authorize="isAuthenticated()">Заказать ремонт</button>
+            <button class="btn btn-primary"
+                    id="orderBtn"
+                    sec:authorize="hasRole('USER')">
+                Заказать ремонт
+            </button>
             <a href="/auth/register" class="btn btn-primary" sec:authorize="isAnonymous()">Зарегистрироваться</a>
         </div>
         <div class="hero-visual">
