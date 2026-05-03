@@ -1,9 +1,8 @@
 package com.xxxpert.xyxarxpert.controllers;
 
+import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
-import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
-import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class RepairRequestController {
 
-    private final UserService userService;
-    private final EmailService emailService;
     private final RepairRequestService requestService;
 
     @PostMapping("/repair-request")
@@ -28,7 +25,14 @@ public class RepairRequestController {
     @PostMapping("/api/repair-request/{id}/accept")
     @ResponseBody
     public ResponseEntity<?> accept(@PathVariable Long id, Authentication auth) {
-        requestService.acceptRequest(id, auth.getName());
+        requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.TAKEN);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/api/repair-request/{id}/cancel")
+    @ResponseBody
+    public ResponseEntity<?> cancel(@PathVariable Long id){
+        requestService.cancelRequest(id);
         return ResponseEntity.ok().build();
     }
 

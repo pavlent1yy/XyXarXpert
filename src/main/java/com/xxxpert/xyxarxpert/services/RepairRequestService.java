@@ -1,5 +1,6 @@
 package com.xxxpert.xyxarxpert.services;
 
+import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
 import com.xxxpert.xyxarxpert.entities.User;
@@ -30,7 +31,7 @@ public class RepairRequestService {
         request.setUser(currentUser);
 
         request.setId(null);
-        request.setStatus("CREATED");
+        request.setStatus(RepairRequestStatus.CREATED);
         request.setCreatedAt(OffsetDateTime.now());
         request.setUpdatedAt(null);
 
@@ -98,7 +99,7 @@ public class RepairRequestService {
 
     public List<RepairRequest> getAllCreatedRequests(){
         List<RepairRequest> requests =
-                repairRequestRepository.findAllByStatusOrderByCreatedAtAsc("CREATED");
+                repairRequestRepository.findAllByStatusOrderByCreatedAtAsc(RepairRequestStatus.CREATED);
         requests.sort(Comparator.comparingInt(this::getPriorityGroup).thenComparing(RepairRequest::getCreatedAt));
         return requests;
     }
@@ -110,23 +111,30 @@ public class RepairRequestService {
     }
 
     private int getPriorityGroup(RepairRequest r) {
-        if ("CREATED".equals(r.getStatus()) && "HIGH".equals(r.getPriority())) {
+        if (RepairRequestStatus.CREATED.equals(r.getStatus()) && "HIGH".equals(r.getPriority())) {
             return 0;
         }
-        if ("CREATED".equals(r.getStatus())) {
+        if (RepairRequestStatus.CREATED.equals(r.getStatus())) {
             return 1;
         }
         return 2;
     }
 
-    public void acceptRequest(Long id, String email){
+    public void updateRequestStatus(Long id, String masterEmail, RepairRequestStatus status){
         RepairRequest request = repairRequestRepository.findById(id).orElseThrow();
 
-        User master = userRepository.findByEmail(email).orElseThrow();
+        User master = userRepository.findByEmail(masterEmail).orElseThrow();
 
         request.setMaster(master);
-        request.setStatus("TAKEN");
+        request.setStatus(status);
+        request.setUpdatedAt(OffsetDateTime.now());
+        repairRequestRepository.save(request);
+    }
 
+    public void cancelRequest(Long id){
+        RepairRequest request = repairRequestRepository.findById(id).orElseThrow();
+        request.setStatus(RepairRequestStatus.CANCELLED);
+        request.setUpdatedAt(OffsetDateTime.now());
         repairRequestRepository.save(request);
     }
 

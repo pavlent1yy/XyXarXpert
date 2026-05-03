@@ -25,7 +25,7 @@ public class SecurityConfig {
         http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                           .requestMatchers( "/auth/**", "/auth/reset-password", "/main", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/profile/all-requests").hasAnyRole("OWNER", "MASTER")
+                        .requestMatchers("/profile/all-requests", "/profile/my-requests").hasAnyRole("OWNER", "MASTER")
                         .anyRequest().authenticated()
                 ).userDetailsService(userDetailsService)
                 .formLogin(form -> form

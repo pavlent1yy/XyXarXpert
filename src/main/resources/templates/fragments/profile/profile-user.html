@@ -16,20 +16,28 @@
             <button class="filter-btn active" data-filter="all">Все</button>
             <button class="filter-btn" data-filter="CREATED">Новая</button>
             <button class="filter-btn" data-filter="IN_PROGRESS">В работе</button>
-            <button class="filter-btn" data-filter="COMPLETED">Готова</button>
+            <button class="filter-btn" data-filter="TAKEN">Взято</button>
+            <button class="filter-btn" data-filter="REJECTED">Отклонено</button>
+            <button class="filter-btn" data-filter="DONE">Готова</button>
             <button class="filter-btn" data-filter="CANCELLED">Отменена</button>
         </div>
 
         <!-- Список заявок -->
         <div class="repairs-list">
-            <div class="repair-item" th:each="request : ${repairRequests}" th:classappend="${'status-' + request.status.toLowerCase()}">
+            <div class="repair-item"
+                 th:each="request : ${repairRequests}"
+                 th:classappend="${'status-' + request.status.name().toLowerCase()}"
+                 th:data-id="${request.id}"
+                 th:data-status="${request.status.name()}">
                 <div class="repair-header">
                     <div class="repair-title-block">
                         <h3 th:text="${request.title}">Разбит экран</h3>
                         <p class="repair-model" th:text="${request.phoneModel}">iPhone 14 Pro</p>
                     </div>
                     <div class="repair-status">
-                        <span class="status-label" th:classappend="${'label-' + request.status.toLowerCase()}" th:text="${request.status == 'CREATED' ? 'Новая' : (request.status == 'IN_PROGRESS' ? 'В работе' : (request.status == 'COMPLETED' ? 'Готова' : 'Отменена'))}"></span>
+                            <span class="status-label"
+                                  th:classappend="${'label-' + request.status.name().toLowerCase()}"
+                                  th:text="${request.status.name() == 'CREATED' ? 'Новая' : (request.status.name() == 'IN_PROGRESS' ? 'В работе' : (request.status.name() == 'TAKEN' ? 'Взято' : (request.status.name() == 'REJECTED' ? 'Отклонено' : (request.status.name() == 'DONE' ? 'Готова' : 'Отменена'))))}"></span>
                     </div>
                 </div>
 
@@ -65,11 +73,9 @@
                         <span>👁️</span>
                         Подробнее
                     </button>
-                    <button class="btn-action-small btn-edit" th:if="${request.status == 'CREATED'}" th:data-id="${request.id}">
-                        <span>✏️</span>
-                        Редактировать
-                    </button>
-                    <button class="btn-action-small btn-cancel" th:if="${request.status != 'COMPLETED' and request.status != 'CANCELLED'}" th:data-id="${request.id}">
+                    <button class="btn-action-small btn-cancel"
+                            th:if="${request.status.name() != 'DONE' and request.status.name() != 'CANCELLED'}"
+                            th:data-id="${request.id}">
                         <span>🗑️</span>
                         Отменить
                     </button>
@@ -85,6 +91,72 @@
         <p>Вы ещё не создавали заявок на ремонт</p>
         <a href="/" class="btn btn-primary">Создать заявку</a>
     </div>
+</div>
+
+<!-- ===== MODAL: REPAIR DETAILS ===== -->
+<div class="modal modal-repair-details" id="repairDetailsModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Название заявки</h2>
+            <button class="modal-close" id="closeDetailsModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <span class="detail-label">Полное описание:</span>
+                <p id="modalDescription" class="detail-text">Описание проблемы</p>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Модель телефона:</span>
+                <span id="modalPhone" class="detail-value">iPhone 14 Pro</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Тип проблемы:</span>
+                <span id="modalIssue" class="detail-value">SCREEN</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Приоритет:</span>
+                <span id="modalPriority" class="detail-value">MEDIUM</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Статус:</span>
+                <span id="modalStatus" class="detail-value"></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Контакт:</span>
+                <span id="modalContact" class="detail-value">+7 (999) 123-45-67</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Создана:</span>
+                <span id="modalCreatedAt" class="detail-value">10.01.2024 14:30</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: CANCEL REQUEST ===== -->
+<div class="modal modal-cancel-request" id="cancelRequestModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Отменить заявку</h2>
+            <button class="modal-close" id="closeCancelModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Вы уверены, что хотите отменить эту заявку?</p>
+            <div class="request-preview" id="cancelRequestPreview"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelCancelBtn">Нет, не хочу</button>
+            <button class="btn-confirm" id="confirmCancelBtn">Да, отменить</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SUCCESS TOAST ===== -->
+<div class="success-toast" id="successToast" style="display: none;">
+    <span class="toast-icon">✓</span>
+    <span class="toast-text" id="toastText">Готово</span>
 </div>
 </body>
 </html>

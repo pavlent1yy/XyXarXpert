@@ -68,7 +68,7 @@
 
         <!-- Список заявок -->
         <div class="requests-list" th:if="${myRequests.size() > 0}">
-            <div class="request-item" th:each="request : ${myRequests}" th:data-id="${request.id}" th:data-status="${request.status}">
+            <div class="request-item" th:each="request : ${myRequests}" th:data-id="${request.id}" th:data-status="${request.status.name()}">
                 <!-- Заголовок заявки -->
                 <div class="item-header">
                     <div class="item-title-block">
@@ -76,8 +76,8 @@
                         <p class="item-phone" th:text="${request.phoneModel}">iPhone 14 Pro</p>
                     </div>
                     <div class="item-meta-quick">
-                            <span class="status-badge" th:classappend="${'status-' + request.status.toLowerCase()}"
-                                  th:text="${request.status == 'TAKEN' ? 'Взято' : (request.status == 'IN_PROGRESS' ? 'В работе' : 'Завершено')}"></span>
+                            <span class="status-badge" th:classappend="${'status-' + request.status.name().toLowerCase()}"
+                                  th:text="${request.status.name() == 'TAKEN' ? 'Взято' : (request.status.name() == 'IN_PROGRESS' ? 'В работе' : 'Завершено')}"></span>
                         <span class="priority-badge" th:classappend="${'priority-' + request.priority.toLowerCase()}"
                               th:text="${request.priority == 'HIGH' ? 'Срочно' : (request.priority == 'MEDIUM' ? 'Стандарт' : 'Обычно')}"></span>
                     </div>
@@ -116,11 +116,11 @@
                         <span>👁️</span>
                         Подробнее
                     </button>
-                    <button class="btn-action btn-start-repair" th:if="${request.status == 'TAKEN'}" th:data-id="${request.id}">
+                    <button class="btn-action btn-start-repair" th:if="${request.status.name() == 'TAKEN'}" th:data-id="${request.id}">
                         <span>▶️</span>
                         Начать ремонт
                     </button>
-                    <button class="btn-action btn-complete" th:if="${request.status == 'IN_PROGRESS'}" th:data-id="${request.id}">
+                    <button class="btn-action btn-complete" th:if="${request.status.name() == 'IN_PROGRESS'}" th:data-id="${request.id}">
                         <span>✓</span>
                         Завершить
                     </button>

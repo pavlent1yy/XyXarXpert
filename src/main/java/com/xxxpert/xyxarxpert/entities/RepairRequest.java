@@ -1,5 +1,6 @@
 package com.xxxpert.xyxarxpert.entities;
 
+import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,11 +37,11 @@ public class RepairRequest {
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
     private String description;
 
-    @Size(max = 50)
     @NotNull
+    @Enumerated(EnumType.STRING)
     @ColumnDefault("'CREATED'")
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
+    @Column(name = "status", nullable = false)
+    private RepairRequestStatus status;
 
     @Size(max = 50)
     @ColumnDefault("'MEDIUM'")
