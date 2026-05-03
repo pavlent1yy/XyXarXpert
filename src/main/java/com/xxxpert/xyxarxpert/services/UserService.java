@@ -12,11 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.LoginContext;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -119,6 +118,7 @@ public class UserService {
         User user = resetToken.getUser();
 
         user.setPasswordHash(passwordEncoder.encode(newPassword));
+        log.info("User: email={} reset their password", user.getEmail());
         userRepository.save(user);
 
         resetToken.setUsed(true);
@@ -135,10 +135,34 @@ public class UserService {
         if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
             throw new RuntimeException("Invalid password");
         }
-
+        log.info("User: email={} changed their password", user.getEmail());
         user.setPasswordHash(passwordEncoder.encode(newPassword));
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public boolean updateProfile(Long userId,
+                                 String firstName,
+                                 String middleName,
+                                 String lastName) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        if (Objects.equals(user.getFirstName(), firstName)
+                && Objects.equals(user.getMiddleName(), middleName)
+                && Objects.equals(user.getLastName(), lastName)) {
+
+            return false;
+        }
+
+        user.setFirstName(firstName);
+        user.setMiddleName(middleName);
+        user.setLastName(lastName);
+
+        log.info("User {} updated profile", user.getEmail());
+
+        return true;
     }
 
 

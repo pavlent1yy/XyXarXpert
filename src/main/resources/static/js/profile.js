@@ -55,13 +55,6 @@ document.querySelectorAll('.btn-view').forEach(btn => {
     });
 });
 
-document.querySelectorAll('.btn-edit').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const requestId = e.currentTarget.dataset.id;
-        // Редактирование заявки
-        alert(`Редактирование заявки #${requestId}`);
-    });
-});
 
 document.querySelectorAll('.btn-cancel').forEach(btn => {
     btn.addEventListener('click', (e) => {

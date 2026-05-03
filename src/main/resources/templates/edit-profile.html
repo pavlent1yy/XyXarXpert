@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование профиля - XXX XyXarXpert</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="main.css">
+    <link rel="stylesheet" th:href="@{/css/pages/edit-profile.css}" href="edit-profile.css">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header.html}"></div>
+
+<!-- Основной контент -->
+<section class="edit-profile-section">
+    <div class="container">
+        <div class="profile-breadcrumb">
+            <a href="/">Главная</a>
+            <span class="separator">→</span>
+            <a href="/profile">Профиль</a>
+            <span class="separator">→</span>
+            <span>Редактирование</span>
+        </div>
+
+        <!-- Заголовок -->
+        <div class="edit-header">
+            <h1>Редактирование профиля</h1>
+            <p>Обновите информацию о вашем аккаунте</p>
+        </div>
+
+        <!-- Сообщения -->
+        <div class="form-message error-message" th:if="${error}" th:text="${error}"></div>
+        <div class="form-message success-message" th:if="${message}" th:text="${message}"></div>
+
+        <!-- Основная карточка профиля -->
+        <div class="edit-card profile-card">
+            <div class="card-header">
+                <h2>Основная информация</h2>
+            </div>
+
+            <form th:action="@{/profile/edit}" method="post" id="profileForm" class="edit-form">
+                <!-- Email (только для чтения) -->
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Email</label>
+                        <div class="static-field" th:text="${user.email}">user@example.com</div>
+                    </div>
+                </div>
+
+                <!-- Имя и отчество -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">Имя *</label>
+                        <div class="input-wrapper">
+                            <input
+                                    type="text"
+                                    id="firstName"
+                                    name="firstName"
+                                    class="form-input"
+                                    th:value="${user.firstName}"
+                                    maxlength="50"
+                                    required
+                            >
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="middleName">Отчество</label>
+                        <div class="input-wrapper">
+                            <input
+                                    type="text"
+                                    id="middleName"
+                                    name="middleName"
+                                    class="form-input"
+                                    th:value="${user.middleName}"
+                                    maxlength="50"
+                            >
+                            <span class="input-icon">📝</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Фамилия *</label>
+                        <div class="input-wrapper">
+                            <input
+                                    type="text"
+                                    id="lastName"
+                                    name="lastName"
+                                    class="form-input"
+                                    th:value="${user.lastName}"
+                                    maxlength="50"
+                                    required
+                            >
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <span>💾</span>
+                        Сохранить изменения
+                    </button>
+                    <a href="/profile" class="btn-cancel">
+                        <span>✕</span>
+                        Отмена
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Карточка безопасности -->
+        <div class="edit-card security-card">
+            <div class="card-header">
+                <h2>Безопасность</h2>
+            </div>
+
+            <div class="security-content">
+                <div class="security-item">
+                    <div class="security-info">
+                        <h3>Пароль</h3>
+                        <p>Регулярно меняйте пароль для безопасности вашего аккаунта</p>
+                    </div>
+                    <a href="/profile/change-password" class="btn-action">
+                        <span>🔐</span>
+                        Изменить пароль
+                    </a>
+                </div>
+
+                <div class="security-item">
+                    <div class="security-info">
+                        <h3>Активные сессии</h3>
+                        <span th:text="|Вы вошли ${#temporals.format(user.registeredAt, 'dd MMMM yyyy в HH:mm')}|"></span>                    </div>
+                    <button class="btn-action btn-logout" type="button">
+                        <span>🚪</span>
+                        Выход
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка информации -->
+        <div class="edit-card info-card">
+            <div class="card-header">
+                <h2>Информация об аккаунте</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Статус аккаунта</span>
+                    <span class="info-value" th:text="${user.enabled ? '✓ Активен' : '✕ Неактивен'}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Роль</span>
+                    <span class="info-value" th:text="${user.role == 'USER' ? 'Клиент' : (user.role == 'MASTER' ? 'Мастер' : (user.role == 'ADMIN' ? 'Администратор' : 'Владелец'))}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Член с</span>
+                    <span class="info-value" th:text="${#temporals.format(user.registeredAt, 'dd MMMM yyyy')}">10 января 2024</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">ID аккаунта</span>
+                    <span class="info-value" th:text="${user.id}">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer.html}"></div>
+
+<!-- Модал выхода -->
+<div class="modal modal-logout" id="logoutModal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-compact">
+        <div class="modal-header">
+            <h2>Выход</h2>
+            <button class="modal-close" id="closeLogoutModal">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-text">Вы уверены, что хотите выйти из аккаунта?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelLogoutBtn">Отмена</button>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-confirm">Да, выйти</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/menu.js}" src="menu.js"></script>
+<script th:src="@{/js/edit-profile.js}" src="edit-profile.js"></script>
+</body>
+</html>

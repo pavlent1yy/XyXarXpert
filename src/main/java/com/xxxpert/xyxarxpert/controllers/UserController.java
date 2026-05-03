@@ -7,7 +7,6 @@ import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import com.xxxpert.xyxarxpert.services.SecurityUtil;
 import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.Banner;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -86,6 +84,25 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute("success", "Пароль успешно изменён");
         return "redirect:/profile";
+    }
+
+    @GetMapping("/profile/edit-profile")
+    public String editProfile(Model model){
+        model.addAttribute("user", util.getCurrentUser());
+        return "edit-profile";
+    }
+
+    @PostMapping("/profile/edit")
+    public String editProfile(@RequestParam String firstName,
+                              @RequestParam String middleName,
+                              @RequestParam String lastName, RedirectAttributes redirectAttributes){
+        boolean updated = userService.updateProfile(util.getCurrentUser().getId(), firstName.trim(), middleName.trim(), lastName.trim());
+
+        if (!updated) {
+            redirectAttributes.addFlashAttribute("info", "Данные не изменились");
+        } else {
+            redirectAttributes.addFlashAttribute("success", "Профиль обновлён");
+        }        return "redirect:/profile";
     }
 
 }
