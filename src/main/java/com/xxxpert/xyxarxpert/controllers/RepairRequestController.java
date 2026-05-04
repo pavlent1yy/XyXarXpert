@@ -3,6 +3,7 @@ package com.xxxpert.xyxarxpert.controllers;
 import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
+import com.xxxpert.xyxarxpert.entities.StartRepairRequest;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
@@ -48,11 +49,12 @@ public class RepairRequestController {
 
     @PostMapping("/api/repair-request/{id}/start-repair")
     @ResponseBody
-    public ResponseEntity<?> start(@PathVariable Long id, Authentication auth){
-        requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.IN_PROGRESS);
-        RepairRequest request = requestService.getRequestById(id);
-        emailService.sendRepairStartNotification(userService.getUserByRepairRequest(id).getEmail(),
-                request.getStreamLink(), request.getMaster());
+    public ResponseEntity<?> start(@PathVariable Long id,
+                                   @RequestBody StartRepairRequest dto,
+                                   Authentication auth) {
+
+        requestService.startRepair(id, auth.getName(), dto.getLiveStreamUrl());
+
         return ResponseEntity.ok().build();
     }
 

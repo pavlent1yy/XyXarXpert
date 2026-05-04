@@ -9,6 +9,7 @@ import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ public class RepairRequestService {
 
     private final RepairRequestRepository repairRequestRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
     private final SecurityUtil util;
 
     public void addRepairRequest(CreateRepairRequestDto dto) {
@@ -140,6 +142,24 @@ public class RepairRequestService {
 
     public RepairRequest getRequestById(Long id){
         return repairRequestRepository.findById(id).orElseThrow();
+    }
+
+    @Transactional
+    public void startRepair(Long id, String masterEmail, String streamUrl) {
+
+        RepairRequest request = repairRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        request.setStatus(RepairRequestStatus.IN_PROGRESS);
+        request.setStreamLink(streamUrl);
+
+        User user = request.getUser();
+
+        emailService.sendRepairStartNotification(
+                user.getEmail(),
+                streamUrl,
+                request.getMaster()
+        );
     }
 
 }
