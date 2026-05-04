@@ -138,4 +138,8 @@ public class RepairRequestService {
         repairRequestRepository.save(request);
     }
 
+    public RepairRequest getRequestById(Long id){
+        return repairRequestRepository.findById(id).orElseThrow();
+    }
+
 }

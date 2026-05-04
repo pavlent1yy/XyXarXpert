@@ -2,7 +2,11 @@ package com.xxxpert.xyxarxpert.controllers;
 
 import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
+import com.xxxpert.xyxarxpert.entities.RepairRequest;
+import com.xxxpert.xyxarxpert.entities.User;
+import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
+import com.xxxpert.xyxarxpert.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class RepairRequestController {
 
     private final RepairRequestService requestService;
+    private final EmailService emailService;
+    private final UserService userService;
 
     @PostMapping("/repair-request")
     @PreAuthorize("hasRole('USER')")
@@ -28,6 +34,8 @@ public class RepairRequestController {
     @ResponseBody
     public ResponseEntity<?> accept(@PathVariable Long id, Authentication auth) {
         requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.TAKEN);
+        RepairRequest request = requestService.getRequestById(id);
+        emailService.sendRepairTakenNotification(userService.getUserByRepairRequest(id).getEmail(), request.getMaster());
         return ResponseEntity.ok().build();
     }
 
@@ -42,6 +50,9 @@ public class RepairRequestController {
     @ResponseBody
     public ResponseEntity<?> start(@PathVariable Long id, Authentication auth){
         requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.IN_PROGRESS);
+        RepairRequest request = requestService.getRequestById(id);
+        emailService.sendRepairStartNotification(userService.getUserByRepairRequest(id).getEmail(),
+                request.getStreamLink(), request.getMaster());
         return ResponseEntity.ok().build();
     }
 

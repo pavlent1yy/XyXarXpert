@@ -117,4 +117,53 @@ public class EmailService {
 
         mailSender.send(passwordReset);
     }
+
+    public void sendRepairStartNotification(String email, String streamlink, User master){
+        SimpleMailMessage passwordReset = new SimpleMailMessage();
+
+        passwordReset.setFrom(fromEmail);
+        passwordReset.setTo(email);
+
+        passwordReset.setSubject("Начался Ремонт!");
+
+        passwordReset.setText("""
+        Мастер %s %s %s уже начал ремонт!
+        Скорее заходите на стрим:
+
+        %s
+        
+        """.formatted(
+                master.getFirstName(),
+                master.getMiddleName(),
+                master.getLastName(),
+                streamlink));
+
+        mailSender.send(passwordReset);
+    }
+
+    public void sendRepairTakenNotification(String email, User master){
+        SimpleMailMessage passwordReset = new SimpleMailMessage();
+
+        passwordReset.setFrom(fromEmail);
+        passwordReset.setTo(email);
+
+        passwordReset.setSubject("Вашу заявку взял мастер");
+
+        passwordReset.setText(
+                """
+                Мастер %s %s %s
+                Если возникнут вопросы, можно написать мастеру на рабочую почту: %s
+                Также можно написать на почту тех. поддержки: xyxarexpert@outlook.com
+                """.formatted(
+                        master.getFirstName(),
+                        master.getMiddleName(),
+                        master.getLastName(),
+                        master.getEmail()
+                )
+        );
+
+        mailSender.send(passwordReset);
+    }
+
+
 }

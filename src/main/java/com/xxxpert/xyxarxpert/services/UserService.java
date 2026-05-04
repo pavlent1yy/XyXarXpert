@@ -3,6 +3,7 @@ package com.xxxpert.xyxarxpert.services;
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
 import com.xxxpert.xyxarxpert.entities.*;
 import com.xxxpert.xyxarxpert.repositories.PasswordResetTokenRepository;
+import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RepairRequestRepository repairRequestRepository;
     private final VerificationRepository verificationRepository;
     private final PasswordResetTokenRepository resetTokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -163,6 +165,12 @@ public class UserService {
         log.info("User {} updated profile", user.getEmail());
 
         return true;
+    }
+
+    public User getUserByRepairRequest(Long requestID){
+        RepairRequest request = repairRequestRepository.findById(requestID)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+        return request.getUser();
     }
 
 
