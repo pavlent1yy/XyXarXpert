@@ -1,9 +1,6 @@
 package com.xxxpert.xyxarxpert.services;
 
-import com.xxxpert.xyxarxpert.entities.EmailVerificationCode;
-import com.xxxpert.xyxarxpert.entities.ForgotPasswordRequest;
-import com.xxxpert.xyxarxpert.entities.PasswordResetToken;
-import com.xxxpert.xyxarxpert.entities.User;
+import com.xxxpert.xyxarxpert.entities.*;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import com.xxxpert.xyxarxpert.repositories.VerificationRepository;
 import jakarta.transaction.Transactional;
@@ -119,14 +116,14 @@ public class EmailService {
     }
 
     public void sendRepairStartNotification(String email, String streamlink, User master){
-        SimpleMailMessage passwordReset = new SimpleMailMessage();
+        SimpleMailMessage startNotification = new SimpleMailMessage();
 
-        passwordReset.setFrom(fromEmail);
-        passwordReset.setTo(email);
+        startNotification.setFrom(fromEmail);
+        startNotification.setTo(email);
 
-        passwordReset.setSubject("Начался Ремонт!");
+        startNotification.setSubject("Начался Ремонт!");
 
-        passwordReset.setText("""
+        startNotification.setText("""
         Мастер %s %s %s уже начал ремонт!
         Скорее заходите на стрим:
 
@@ -138,7 +135,7 @@ public class EmailService {
                 master.getLastName(),
                 streamlink));
 
-        mailSender.send(passwordReset);
+        mailSender.send(startNotification);
     }
 
     public void sendRepairTakenNotification(String email, User master){
@@ -163,6 +160,34 @@ public class EmailService {
         );
 
         mailSender.send(passwordReset);
+    }
+
+    public void sendRepairRequestRejectReason(String reason, RepairRequest request){
+        SimpleMailMessage repairReject = new SimpleMailMessage();
+        User master = request.getMaster();
+        repairReject.setFrom(fromEmail);
+        repairReject.setTo(request.getUser().getEmail());
+
+        repairReject.setSubject("Вашу заявку отклонили.");
+
+        repairReject.setText(
+                """
+                К сожалению, вашу заявку ' %s ' откланили..
+                Мастер %s %s %s передал вам следующее сообщение:
+                ' %s '
+                Если возникнут вопросы, можно написать мастеру на рабочую почту: %s
+                Также можно связаться с нами с помощью почты тех. поддержки: xyxarexpert@outlook.com
+                """.formatted(
+                        request.getTitle(),
+                        master.getFirstName(),
+                        master.getMiddleName(),
+                        master.getLastName(),
+                        reason,
+                        master.getEmail()
+                )
+        );
+
+        mailSender.send(repairReject);
     }
 
 

@@ -3,8 +3,8 @@ package com.xxxpert.xyxarxpert.controllers;
 import com.xxxpert.xyxarxpert.RepairRequestStatus;
 import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
+import com.xxxpert.xyxarxpert.entities.RepairRequestReject;
 import com.xxxpert.xyxarxpert.entities.StartRepairRequest;
-import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import com.xxxpert.xyxarxpert.services.UserService;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -26,7 +25,7 @@ public class RepairRequestController {
 
     @PostMapping("/repair-request")
     @PreAuthorize("hasRole('USER')")
-    public String newRepairRequest(@ModelAttribute CreateRepairRequestDto dto, Model model){
+    public String newRepairRequest(@ModelAttribute CreateRepairRequestDto dto){
         requestService.addRepairRequest(dto);
         return "redirect:/profile";
     }
@@ -64,6 +63,18 @@ public class RepairRequestController {
         requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.DONE);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/api/repair-request/{id}/reject")
+    @ResponseBody
+    public ResponseEntity<?> reject(@PathVariable Long id,
+                                    @RequestBody RepairRequestReject requestReject,
+                                    Authentication auth){
+        RepairRequest request = requestService.getRequestById(id);
+        requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.REJECTED);
+        emailService.sendRepairRequestRejectReason(requestReject.getReason(), request);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
