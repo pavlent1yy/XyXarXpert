@@ -1,6 +1,6 @@
-package com.xxxpert.xyxarxpert.entities;
+package com.xxxpert.xyxarxpert.dto;
 
-public class ForgotPasswordRequest {
+public class ForgotPasswordRequestDTO {
 
     private String email;
 

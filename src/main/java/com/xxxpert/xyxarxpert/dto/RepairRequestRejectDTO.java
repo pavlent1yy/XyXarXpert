@@ -1,6 +1,6 @@
-package com.xxxpert.xyxarxpert.entities;
+package com.xxxpert.xyxarxpert.dto;
 
-public class RepairRequestReject {
+public class RepairRequestRejectDTO {
     private String reason;
 
     public String getReason() {

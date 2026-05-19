@@ -1,10 +1,10 @@
 package com.xxxpert.xyxarxpert.controllers;
 
 import com.xxxpert.xyxarxpert.RepairRequestStatus;
-import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
+import com.xxxpert.xyxarxpert.dto.CreateRepairRequestDTO;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
-import com.xxxpert.xyxarxpert.entities.RepairRequestReject;
-import com.xxxpert.xyxarxpert.entities.StartRepairRequest;
+import com.xxxpert.xyxarxpert.dto.RepairRequestRejectDTO;
+import com.xxxpert.xyxarxpert.dto.StartRepairRequestDTO;
 import com.xxxpert.xyxarxpert.services.EmailService;
 import com.xxxpert.xyxarxpert.services.RepairRequestService;
 import com.xxxpert.xyxarxpert.services.UserService;
@@ -25,7 +25,7 @@ public class RepairRequestController {
 
     @PostMapping("/repair-request")
     @PreAuthorize("hasRole('USER')")
-    public String newRepairRequest(@ModelAttribute CreateRepairRequestDto dto){
+    public String newRepairRequest(@ModelAttribute CreateRepairRequestDTO dto){
         requestService.addRepairRequest(dto);
         return "redirect:/profile";
     }
@@ -49,7 +49,7 @@ public class RepairRequestController {
     @PostMapping("/api/repair-request/{id}/start-repair")
     @ResponseBody
     public ResponseEntity<?> start(@PathVariable Long id,
-                                   @RequestBody StartRepairRequest dto,
+                                   @RequestBody StartRepairRequestDTO dto,
                                    Authentication auth) {
 
         requestService.startRepair(id, auth.getName(), dto.getLiveStreamUrl());
@@ -67,7 +67,7 @@ public class RepairRequestController {
     @PostMapping("/api/repair-request/{id}/reject")
     @ResponseBody
     public ResponseEntity<?> reject(@PathVariable Long id,
-                                    @RequestBody RepairRequestReject requestReject,
+                                    @RequestBody RepairRequestRejectDTO requestReject,
                                     Authentication auth){
         RepairRequest request = requestService.getRequestById(id);
         requestService.updateRequestStatus(id, auth.getName(), RepairRequestStatus.REJECTED);

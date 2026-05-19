@@ -2,7 +2,7 @@ package com.xxxpert.xyxarxpert.controllers;
 
 
 import com.xxxpert.xyxarxpert.UserAlreadyExistsException;
-import com.xxxpert.xyxarxpert.entities.ForgotPasswordRequest;
+import com.xxxpert.xyxarxpert.dto.ForgotPasswordRequestDTO;
 import com.xxxpert.xyxarxpert.entities.PasswordResetToken;
 import com.xxxpert.xyxarxpert.entities.RegisterRequest;
 import com.xxxpert.xyxarxpert.entities.User;
@@ -93,7 +93,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@ModelAttribute ForgotPasswordRequest request){
+    public String forgotPassword(@ModelAttribute ForgotPasswordRequestDTO request){
 
         userService.getUserByEmail(request.getEmail())
                 .ifPresent(userService::sendPasswordResetEmail);

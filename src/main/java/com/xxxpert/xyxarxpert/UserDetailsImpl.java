@@ -1,6 +1,7 @@
-package com.xxxpert.xyxarxpert.entities;
+package com.xxxpert.xyxarxpert;
 
 
+import com.xxxpert.xyxarxpert.entities.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;

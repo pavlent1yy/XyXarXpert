@@ -1,6 +1,6 @@
-package com.xxxpert.xyxarxpert.entities;
+package com.xxxpert.xyxarxpert.dto;
 
-public class StartRepairRequest {
+public class StartRepairRequestDTO {
     private String liveStreamUrl;
 
     public String getLiveStreamUrl() {

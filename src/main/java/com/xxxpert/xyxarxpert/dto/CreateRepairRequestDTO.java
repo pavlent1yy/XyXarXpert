@@ -1,4 +1,4 @@
-package com.xxxpert.xyxarxpert.entities;
+package com.xxxpert.xyxarxpert.dto;
 
 
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateRepairRequestDto {
+public class CreateRepairRequestDTO {
 
     private String title;
     private String description;

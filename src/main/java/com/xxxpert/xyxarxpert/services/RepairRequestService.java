@@ -1,7 +1,7 @@
 package com.xxxpert.xyxarxpert.services;
 
 import com.xxxpert.xyxarxpert.RepairRequestStatus;
-import com.xxxpert.xyxarxpert.entities.CreateRepairRequestDto;
+import com.xxxpert.xyxarxpert.dto.CreateRepairRequestDTO;
 import com.xxxpert.xyxarxpert.entities.RepairRequest;
 import com.xxxpert.xyxarxpert.entities.User;
 import com.xxxpert.xyxarxpert.repositories.RepairRequestRepository;
@@ -25,7 +25,7 @@ public class RepairRequestService {
     private final EmailService emailService;
     private final SecurityUtil util;
 
-    public void addRepairRequest(CreateRepairRequestDto dto) {
+    public void addRepairRequest(CreateRepairRequestDTO dto) {
         RepairRequest request = new RepairRequest();
         User currentUser = util.getCurrentUser();
         log.debug("Start creating repair request: userId={}", currentUser.getId());

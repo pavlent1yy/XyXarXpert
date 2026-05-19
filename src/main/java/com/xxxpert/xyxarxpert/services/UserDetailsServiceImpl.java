@@ -1,7 +1,7 @@
 package com.xxxpert.xyxarxpert.services;
 
 
-import com.xxxpert.xyxarxpert.entities.UserDetailsImpl;
+import com.xxxpert.xyxarxpert.UserDetailsImpl;
 import com.xxxpert.xyxarxpert.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
